@@ -7,18 +7,32 @@
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "npm run build",
-    "frontendDist": "../build"
+    "frontendDist": "../build",
+    "removeUnusedCommands": true
   },
   "app": {
     "windows": [
       {
-        "title": "wakfu-dptmeter",
+        "decorations": true,
+        "devtools": true,
+        "fullscreen": false,
+        "resizable": true,
+        "maximized": false,
+        "visible": true,
+        "title": "Wakfu DPT Meter",
+        "windowClassname": "Wakfu DPT Meter",
         "width": 800,
-        "height": 600
+        "height": 400,
+        "alwaysOnTop": true,
+        "zoomHotkeysEnabled": false,
+        "contentProtected": true
       }
     ],
     "security": {
-      "csp": null
+      "csp": null,
+      "pattern": {
+        "use": "brownfield"
+      }
     }
   },
   "bundle": {
