@@ -1,8 +1,6 @@
 <script lang="ts">
     import {invoke} from "@tauri-apps/api/core";
-    import {path} from "@tauri-apps/api";
-    import {WAKFU_LOG_FILE, WAKFU_LOGS_PATH} from "../utils/const";
-    import {exists, readTextFile, watchImmediate, writeTextFile} from '@tauri-apps/plugin-fs';
+    import { attachConsole } from '@tauri-apps/plugin-log';
 
     let name = $state("");
     let greetMsg = $state("");
@@ -13,34 +11,9 @@
         greetMsg = await invoke("greet", {name});
     }
 
-    async function initializeDptMeter() {
-        const wakfuChatLog = await path.join(await path.dataDir(), WAKFU_LOGS_PATH, WAKFU_LOG_FILE);
-        const doesFileExist = await exists(wakfuChatLog);
-
-        if (!doesFileExist) {
-            return;
-        }
-
-        await writeTextFile(wakfuChatLog, "")
-
-        await watchImmediate(wakfuChatLog, (e) => {
-            console.log(e)
-            readTextFile(wakfuChatLog).then((allContent) => {
-                const lines = allContent.split("\n").filter(line => line.trim() !== "");
-                const lastLine = lines[lines.length - 1];
-                console.log(lastLine)
-            });
-        });
-    }
-
     $effect(() => {
-        initializeDptMeter()
-            .then(() => console.info("DPT Meter initialized successfully."))
-            .catch((error) => {
-                    console.error("Failed to initialize DPT Meter:", error);
-                }
-            );
-    });
+        attachConsole().then();
+    })
 </script>
 
 <main class="container">

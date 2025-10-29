@@ -7,46 +7,6 @@
   ],
   "permissions": [
     "core:default",
-    "fs:default",
-    {
-      "identifier": "fs:allow-exists",
-      "allow": [
-        {
-          "path": "$DATA/**/*"
-        }
-      ]
-    },
-    {
-      "identifier": "fs:allow-data-read",
-      "allow": [
-        {
-          "path": "$DATA/**/*"
-        }
-      ]
-    },
-    {
-      "identifier": "fs:allow-data-write",
-      "allow": [
-        {
-          "path": "$DATA/**/*"
-        }
-      ]
-    },
-    {
-      "identifier": "fs:allow-watch",
-      "allow": [
-        {
-          "path": "$DATA/**/*"
-        }
-      ]
-    },
-    {
-      "identifier": "fs:allow-unwatch",
-      "allow": [
-        {
-          "path": "$DATA/**/*"
-        }
-      ]
-    }
+    "log:default"
   ]
 }

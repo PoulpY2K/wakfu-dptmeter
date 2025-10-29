@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    wakfu_dptmeter_lib::run()
+    wakfu_dptmeter_lib::run();
 }
