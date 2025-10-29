@@ -7,11 +7,14 @@ use std::path::Path;
 use std::sync::mpsc::Sender;
 use std::thread;
 use std::time::Duration;
+use chrono::{DateTime, TimeZone};
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
+use serde::{de::Error, Deserialize, Deserializer};
+use serde_json;
 
 const WAKFU_CHAT_LOG_PATH: &str =
-    "C:\\Users\\poulpyy\\AppData\\Roaming\\zaap\\gamesLogs\\wakfu\\logs\\wakfu_chat.log";
+    "C:\\Users\\poulpyy\\AppData\\Roaming\\zaap\\gamesLogs\\wakfu\\logs\\wakfu.log";
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -47,7 +50,7 @@ pub fn run() {
                 }
 
                 log::info!("Initializing watch and waiting for events");
-                let mut file_size: u64 = 0;
+                let file_size: u64 = 0;
                 debouncer
                     .watcher()
                     .watch(Path::new(WAKFU_CHAT_LOG_PATH), RecursiveMode::NonRecursive)
@@ -57,7 +60,13 @@ pub fn run() {
                 for result in rx {
                     match result {
                         Ok(_event) => {
-                            file_size = get_last_lines_from_file(file_size);
+                            let buf = get_recent_lines_buffer_from_file(file_size);
+                            match String::from_utf8(buf) {
+                                Ok(s) => {
+                                    log::info!("{}", s.trim())
+                                }
+                                Err(_) => log::info!("Une erreur est survenue lors de la récupération du texte"),
+                            }
                         }
                         Err(error) => println!("Error {error:?}"),
                     }
@@ -98,7 +107,7 @@ fn declare_debouncer(tx: Sender<DebounceEventResult>) -> Debouncer<PollWatcher> 
     new_debouncer_opt::<_, PollWatcher>(debouncer_config, tx).unwrap()
 }
 
-fn get_last_lines_from_file(mut file_size: u64) -> u64 {
+fn get_recent_lines_buffer_from_file(mut file_size: u64) -> Vec<u8> {
     let mut f = File::open(WAKFU_CHAT_LOG_PATH).unwrap();
     let metadata = f.metadata().unwrap();
     let new_size = metadata.len();
@@ -120,10 +129,20 @@ fn get_last_lines_from_file(mut file_size: u64) -> u64 {
     // mettre à jour la taille connue
     file_size = new_size;
 
-    match String::from_utf8(buf) {
-        Ok(s) => log::info!("{}", s.trim()),
-        Err(_) => log::info!("{} octets ajoutés (binaire)", added),
-    }
+    buf
+}
 
-    file_size
+#[derive(Debug)]
+struct Fight {
+    pub fighters: Vec<Fighter>,
+    pub started: DateTime<chrono::Utc>,
+    pub finished: DateTime<chrono::Utc>
+}
+
+#[derive(Debug)]
+struct Fighter {
+    pub id: u64,
+    pub name: String,
+    pub total_damage: u64,
+    pub is_controlled_by_ai: bool
 }
