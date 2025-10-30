@@ -1,0 +1,7 @@
+ INFO 13:23:54,851 [AWT-EventQueue-0] (aWl:47) - CREATION DU COMBAT
+ INFO 13:23:54,851 [AWT-EventQueue-0] (eRL:1407) - [_FL_] fightId=1552017754 Mama Wapin breed : 5456 [-1706442042719099] isControlledByAI=true obstacleId : -1 join the fight at {Point3 : (4, -9, 1)}
+ INFO 13:23:54,854 [AWT-EventQueue-0] (eRL:1407) - [_FL_] fightId=1552017754 Yenkril breed : 8 [11122359] isControlledByAI=false obstacleId : -1 join the fight at {Point3 : (1, -8, 1)}
+ INFO 13:23:54,878 [AWT-EventQueue-0] (aOC:174) - [Information (combat)] Votre combat est verrouillé, ce qui empêche d'autres joueurs de vous rejoindre.
+[2025-10-29 13:23:55.060 INFO wakfu_dptmeter_lib] Fight start detected
+[2025-10-29 13:23:55.935 INFO wakfu_dptmeter_lib] WARN 13:23:55,756 [AWT-EventQueue-0] (brK:342) - [FIGHT_REFACTOR]Tentative de spawn du fighter 8722695 sans connaitre sa team
+ INFO 13:23:55,756 [AWT-EventQueue-0] (cfu:37) - Starting join procedure for 8722695

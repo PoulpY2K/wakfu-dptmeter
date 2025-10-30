@@ -1,9 +1,8 @@
-use chrono::{DateTime, TimeZone};
+mod model;
+
 use notify::{PollWatcher, RecursiveMode};
 use notify_debouncer_mini::{new_debouncer_opt, Config, DebounceEventResult, Debouncer};
-use serde::{de::Error, Deserialize, Deserializer};
-use serde_json;
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::io::prelude::*;
 use std::io::SeekFrom;
 use std::path::Path;
@@ -15,21 +14,6 @@ use tauri_plugin_log::{Target, TargetKind};
 
 const WAKFU_CHAT_LOG_PATH: &str =
     "C:\\Users\\poulpyy\\AppData\\Roaming\\zaap\\gamesLogs\\wakfu\\logs\\wakfu.log";
-
-#[derive(Debug)]
-struct Fight {
-    pub fighters: Vec<Fighter>,
-    pub started: DateTime<chrono::Utc>,
-    pub finished: DateTime<chrono::Utc>,
-}
-
-#[derive(Debug)]
-struct Fighter {
-    pub id: u64,
-    pub name: String,
-    pub total_damage: u64,
-    pub is_controlled_by_ai: bool,
-}
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -51,19 +35,14 @@ pub fn run() {
         .setup(|_app| {
             // Setup debouncer
             log::info!(
-                "Setup debouncing watch for chat log file {}",
+                "Create thread and setup debouncing watch for log file {}",
                 WAKFU_CHAT_LOG_PATH
             );
-            let (tx, rx) = std::sync::mpsc::channel();
-            let mut debouncer = declare_debouncer(tx);
-
-            // Empty file on startup
-            log::info!("Emptying chat log file at startup");
-            if let Err(e) = File::create(WAKFU_CHAT_LOG_PATH).and_then(|f| f.set_len(0)) {
-                log::error!("Failed to empty chat log file: {}", e);
-            }
 
             thread::spawn(move || {
+                let (tx, rx) = std::sync::mpsc::channel();
+                let mut debouncer = declare_debouncer(tx);
+
                 log::info!("Initializing watch and waiting for events");
                 debouncer
                     .watcher()
@@ -96,7 +75,7 @@ pub fn run() {
         .expect("error while running tauri application");
 }
 
-fn handle_debouncer_result(rx: Receiver<DebounceEventResult>) {
+pub fn handle_debouncer_result(rx: Receiver<DebounceEventResult>) {
     let mut file_size: u64 = 0;
     // Treat results
     for result in rx {
@@ -111,10 +90,14 @@ fn handle_debouncer_result(rx: Receiver<DebounceEventResult>) {
     }
 }
 
-fn handle_string_match(buf: Vec<u8>) {
+pub fn handle_string_match(buf: Vec<u8>) {
     match String::from_utf8(buf) {
         Ok(s) => {
-            log::info!("{}", s.trim())
+            let trimmed_s = s.trim();
+            log::info!("{}", trimmed_s);
+            if trimmed_s.contains("CREATION DU COMBAT") {
+                log::info!("Fight start detected");
+            }
         }
         Err(_) => {
             log::info!("Une erreur est survenue lors de la récupération du texte")
@@ -122,10 +105,8 @@ fn handle_string_match(buf: Vec<u8>) {
     }
 }
 
-fn declare_debouncer(tx: Sender<DebounceEventResult>) -> Debouncer<PollWatcher> {
-    // notify backend configuration
+pub fn declare_debouncer(tx: Sender<DebounceEventResult>) -> Debouncer<PollWatcher> {
     let backend_config = notify::Config::default().with_poll_interval(Duration::from_millis(100));
-    // debouncer configuration
     let debouncer_config = Config::default()
         .with_timeout(Duration::from_millis(100))
         .with_notify_config(backend_config);
@@ -133,7 +114,7 @@ fn declare_debouncer(tx: Sender<DebounceEventResult>) -> Debouncer<PollWatcher> 
     new_debouncer_opt::<_, PollWatcher>(debouncer_config, tx).unwrap()
 }
 
-fn get_recent_lines_buffer_from_file(mut file_size: u64) -> (u64, Vec<u8>) {
+pub fn get_recent_lines_buffer_from_file(mut file_size: u64) -> (u64, Vec<u8>) {
     let mut f = File::open(WAKFU_CHAT_LOG_PATH).unwrap();
     let metadata = f.metadata().unwrap();
     let new_size = metadata.len();
