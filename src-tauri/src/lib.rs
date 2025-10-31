@@ -1,19 +1,38 @@
-mod model;
-
 use notify::{PollWatcher, RecursiveMode};
 use notify_debouncer_mini::{new_debouncer_opt, Config, DebounceEventResult, Debouncer};
-use std::fs::{File, OpenOptions};
+use std::fs::File;
 use std::io::prelude::*;
 use std::io::SeekFrom;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::mpsc::{Receiver, Sender};
-use std::thread;
 use std::time::Duration;
-use tauri::Manager;
+use std::{fs, thread};
+use tauri::{AppHandle, Emitter, Manager};
 use tauri_plugin_log::{Target, TargetKind};
 
 const WAKFU_CHAT_LOG_PATH: &str =
     "C:\\Users\\poulpyy\\AppData\\Roaming\\zaap\\gamesLogs\\wakfu\\logs\\wakfu.log";
+
+#[test]
+fn writes_and_contains_creation_du_combat() {
+    // chemin vers un fichier temporaire
+    let mut path: PathBuf = std::env::temp_dir();
+    path.push("wakfu_test_log.txt");
+
+    // écrire dans le fichier
+    let mut file = fs::File::create(&path).expect("failed to create temp file");
+    writeln!(file, "LIGNE 1").unwrap();
+    writeln!(file, "CREATION DU COMBAT").unwrap();
+    writeln!(file, "LIGNE 3").unwrap();
+    file.flush().unwrap();
+
+    // lire et vérifier
+    let content = fs::read_to_string(&path).expect("failed to read temp file");
+    assert!(content.contains("CREATION DU COMBAT"));
+
+    // cleanup
+    let _ = fs::remove_file(&path);
+}
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
@@ -32,24 +51,25 @@ pub fn run() {
             }
             Ok(())
         })
-        .setup(|_app| {
-            // Setup debouncer
+        .setup(|app| {
+            let app_handle = app.handle().clone();
+
             log::info!(
-                "Create thread and setup debouncing watch for log file {}",
+                "Create threads and setup debouncing watch for log file {}",
                 WAKFU_CHAT_LOG_PATH
             );
 
-            thread::spawn(move || {
-                let (tx, rx) = std::sync::mpsc::channel();
-                let mut debouncer = declare_debouncer(tx);
+            let (tx, rx) = std::sync::mpsc::channel();
+            let mut debouncer = declare_debouncer(tx);
 
+            tauri::async_runtime::spawn(async move {
                 log::info!("Initializing watch and waiting for events");
                 debouncer
                     .watcher()
                     .watch(Path::new(WAKFU_CHAT_LOG_PATH), RecursiveMode::NonRecursive)
                     .unwrap();
 
-                handle_debouncer_result(rx);
+                handle_debouncer_result(&app_handle, rx);
             });
 
             Ok(())
@@ -75,14 +95,14 @@ pub fn run() {
         .expect("error while running tauri application");
 }
 
-pub fn handle_debouncer_result(rx: Receiver<DebounceEventResult>) {
+pub fn handle_debouncer_result(app_handle: &AppHandle, rx: Receiver<DebounceEventResult>) {
     let mut file_size: u64 = 0;
     // Treat results
     for result in rx {
         match result {
             Ok(_event) => {
                 let (final_size, buf) = get_recent_lines_buffer_from_file(file_size);
-                handle_string_match(buf);
+                send_string(app_handle, buf);
                 file_size = final_size;
             }
             Err(error) => println!("Error {error:?}"),
@@ -90,14 +110,12 @@ pub fn handle_debouncer_result(rx: Receiver<DebounceEventResult>) {
     }
 }
 
-pub fn handle_string_match(buf: Vec<u8>) {
+pub fn send_string(app_handle: &AppHandle, buf: Vec<u8>) {
     match String::from_utf8(buf) {
         Ok(s) => {
             let trimmed_s = s.trim();
             log::info!("{}", trimmed_s);
-            if trimmed_s.contains("CREATION DU COMBAT") {
-                log::info!("Fight start detected");
-            }
+            app_handle.emit("log-update", trimmed_s).unwrap();
         }
         Err(_) => {
             log::info!("Une erreur est survenue lors de la récupération du texte")

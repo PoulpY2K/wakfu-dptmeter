@@ -24,7 +24,7 @@
         "windowClassname": "Wakfu DPT Meter",
         "width": 800,
         "height": 400,
-        "alwaysOnTop": true,
+        "alwaysOnTop": false,
         "zoomHotkeysEnabled": false
       }
     ],
