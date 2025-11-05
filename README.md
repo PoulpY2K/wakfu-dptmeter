@@ -9,7 +9,13 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 [![AGPL License](https://img.shields.io/badge/license-AGPL-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+
 ![Build status](https://img.shields.io/github/actions/workflow/status/PoulpY2K/wakfu-dptmeter/tauri.yml)
+![Gate](https://img.shields.io/sonar/quality_gate/PoulpY2K_wakfu-dptmeter?server=https%3A%2F%2Fsonarcloud.io
+)
+![Coverage](https://img.shields.io/sonar/coverage/PoulpY2K_wakfu-dptmeter?server=https%3A%2F%2Fsonarcloud.io
+)
+
 
 <p style="text-align:center">Il s'agit d'un projet privé concernant le jeu vidéo Wakfu détenu par Ankamas Games. 
 Le but de l'outil est d'afficher le nombre de dégats par tour fait par les personnages au fur et à mesure de chaque combat.</p></div>
