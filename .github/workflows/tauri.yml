@@ -1,4 +1,4 @@
-name: "Tauri build and release"
+name: "Tauri build, release and run analysis"
 
 on:
   push:
