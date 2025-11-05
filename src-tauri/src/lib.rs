@@ -3,35 +3,42 @@ use notify_debouncer_mini::{new_debouncer_opt, Config, DebounceEventResult, Debo
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::SeekFrom;
-use std::path::{Path, PathBuf};
+use std::path::{Path};
 use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
-use std::{fs};
 use tauri::{AppHandle, Emitter, Manager};
 use tauri_plugin_log::{Target, TargetKind};
 
 const WAKFU_CHAT_LOG_PATH: &str =
     "C:\\Users\\poulpyy\\AppData\\Roaming\\zaap\\gamesLogs\\wakfu\\logs\\wakfu.log";
 
-#[test]
-fn writes_and_contains_creation_du_combat() {
-    // chemin vers un fichier temporaire
-    let mut path: PathBuf = std::env::temp_dir();
-    path.push("wakfu_test_log.txt");
+#[cfg(test)]
+mod tests {
+    use std::fs::{read_to_string, remove_file};
+    use std::path::PathBuf;
+    use std::fs::File;
+    use std::io::Write;
 
-    // écrire dans le fichier
-    let mut file = File::create(&path).expect("failed to create temp file");
-    writeln!(file, "LIGNE 1").unwrap();
-    writeln!(file, "CREATION DU COMBAT").unwrap();
-    writeln!(file, "LIGNE 3").unwrap();
-    file.flush().unwrap();
+    #[test]
+    fn writes_and_contains_creation_du_combat() {
+        // chemin vers un fichier temporaire
+        let mut path: PathBuf = std::env::temp_dir();
+        path.push("wakfu_test_log.txt");
 
-    // lire et vérifier
-    let content = fs::read_to_string(&path).expect("failed to read temp file");
-    assert!(content.contains("CREATION DU COMBAT"));
+        // écrire dans le fichier
+        let mut file = File::create(&path).expect("failed to create temp file");
+        writeln!(file, "LIGNE 1").unwrap();
+        writeln!(file, "CREATION DU COMBAT").unwrap();
+        writeln!(file, "LIGNE 3").unwrap();
+        file.flush().unwrap();
 
-    // cleanup
-    let _ = fs::remove_file(&path);
+        // lire et vérifier
+        let content = read_to_string(&path).expect("failed to read temp file");
+        assert!(content.contains("CREATION DU COMBAT"));
+
+        // cleanup
+        let _ = remove_file(&path);
+    }
 }
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
