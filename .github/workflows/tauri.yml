@@ -46,7 +46,7 @@ jobs:
 
       - name: code analysis
         working-directory: ./src-tauri
-        run: cargo clippy --message-format=json &> clippy-output.json
+        run: cargo clippy --message-format=json | tee clippy-output.json
 
       - name: code coverage
         working-directory: ./src-tauri
