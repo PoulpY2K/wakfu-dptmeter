@@ -6,7 +6,7 @@ use std::io::SeekFrom;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::{Receiver, Sender};
 use std::time::Duration;
-use std::{fs, thread};
+use std::{fs};
 use tauri::{AppHandle, Emitter, Manager};
 use tauri_plugin_log::{Target, TargetKind};
 
@@ -20,7 +20,7 @@ fn writes_and_contains_creation_du_combat() {
     path.push("wakfu_test_log.txt");
 
     // écrire dans le fichier
-    let mut file = fs::File::create(&path).expect("failed to create temp file");
+    let mut file = File::create(&path).expect("failed to create temp file");
     writeln!(file, "LIGNE 1").unwrap();
     writeln!(file, "CREATION DU COMBAT").unwrap();
     writeln!(file, "LIGNE 3").unwrap();
