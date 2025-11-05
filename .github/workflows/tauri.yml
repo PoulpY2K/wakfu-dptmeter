@@ -33,6 +33,9 @@ jobs:
           # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
+      - name: install cargo llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
         run: |
@@ -40,6 +43,14 @@ jobs:
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
         # webkitgtk 4.0 is for Tauri v1 - webkitgtk 4.1 is for Tauri v2.
         # You can remove the one that doesn't apply to your app to speed up the workflow a bit.
+
+      - name: code analysis
+        working-directory: ./src-tauri
+        run: cargo clippy --message-format=json &> clippy-output.json
+
+      - name: code coverage
+        working-directory: ./src-tauri
+        run: cargo llvm-cov --json --output-path lcov-output.json
 
       - name: install frontend dependencies
         run: npm install # change this to npm, pnpm or bun depending on which one you use.
