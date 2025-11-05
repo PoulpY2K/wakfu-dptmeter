@@ -67,6 +67,7 @@ jobs:
           args: ${{ matrix.args }}
 
   sonarqube:
+    needs: build-tauri
     name: SonarQube
     runs-on: windows-latest
     steps:
