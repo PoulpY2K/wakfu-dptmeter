@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "wakfu-dptmeter",
+  "version": "0.1.0",
+  "identifier": "fr.fumbus.wakfu-dptmeter",
+  "build": {
+    "beforeDevCommand": "bun run start",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "bun run build",
+    "frontendDist": "../dist/wakfu-dptmeter/browser",
+    "removeUnusedCommands": true
+  },
+  "app": {
+    "windows": [
+      {
+        "decorations": true,
+        "devtools": true,
+        "contentProtected": false,
+        "fullscreen": false,
+        "resizable": true,
+        "maximized": false,
+        "visible": true,
+        "title": "Wakfu DPT Meter",
+        "windowClassname": "Wakfu DPT Meter",
+        "width": 800,
+        "height": 400,
+        "alwaysOnTop": false,
+        "zoomHotkeysEnabled": false
+      }
+    ],
+    "security": {
+      "csp": null,
+      "pattern": {
+        "use": "brownfield"
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}
