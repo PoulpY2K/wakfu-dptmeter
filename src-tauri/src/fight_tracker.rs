@@ -58,6 +58,17 @@ impl FightTracker {
         Self::default()
     }
 
+    fn resolve_owner_entity_id(&self, name: &str) -> Option<i64> {
+        if let Some(&owner_id) = self.summon_owner.get(name) {
+            Some(owner_id)
+        } else {
+            self.participants
+                .values()
+                .find(|combatant| combatant.name == name)
+                .map(|combatant| combatant.entity_id)
+        }
+    }
+
     pub fn process(&mut self, event: LogEvent) -> Vec<FightEvent> {
         match event {
             LogEvent::FightCreationDetected => {
@@ -77,6 +88,10 @@ impl FightTracker {
                 if self.fight_id.is_none() {
                     self.fight_id = Some(fight_id);
                     events.push(FightEvent::FightStarted { fight_id });
+                }
+
+                if self.summon_owner.contains_key(&name) {
+                    return events;
                 }
 
                 let side = if is_controlled_by_ai {
@@ -99,6 +114,15 @@ impl FightTracker {
                     side,
                 });
                 events
+            }
+            LogEvent::SummonInvoked {
+                owner_name,
+                summon_name,
+            } => {
+                if let Some(owner_entity_id) = self.resolve_owner_entity_id(&owner_name) {
+                    self.summon_owner.insert(summon_name, owner_entity_id);
+                }
+                Vec::new()
             }
             _ => Vec::new(),
         }
@@ -158,5 +182,33 @@ mod tests {
                 side: Side::Player,
             }]
         );
+    }
+
+    #[test]
+    fn summon_invocation_excludes_it_from_combatant_identification() {
+        let mut tracker = FightTracker::new();
+        tracker.process(LogEvent::FightCreationDetected);
+
+        let blampy_events = tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Blampy".to_string(),
+            entity_id: 5547447,
+            is_controlled_by_ai: false,
+        });
+        assert_eq!(blampy_events.len(), 2); // FightStarted + CombatantIdentified
+
+        let summon_invoked_events = tracker.process(LogEvent::SummonInvoked {
+            owner_name: "Blampy".to_string(),
+            summon_name: "Bombe Aveuglante".to_string(),
+        });
+        assert_eq!(summon_invoked_events, Vec::new());
+
+        let summon_joined_events = tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Bombe Aveuglante".to_string(),
+            entity_id: -1724034220279884,
+            is_controlled_by_ai: true,
+        });
+        assert_eq!(summon_joined_events, Vec::new());
     }
 }
