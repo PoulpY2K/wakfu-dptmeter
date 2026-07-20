@@ -1,3 +1,5 @@
+mod log_parser;
+
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
