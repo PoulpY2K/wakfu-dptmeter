@@ -32,6 +32,8 @@ pub enum FightEvent {
         amount: i32,
         kind: ActionKind,
         element: Option<String>,
+        spell_name: Option<String>,
+        is_critical: bool,
     },
     FightEnded {
         fight_id: u64,
@@ -45,17 +47,31 @@ struct Combatant {
     side: Side,
 }
 
+#[derive(Debug, Clone, PartialEq)]
+struct CurrentCast {
+    caster_entity_id: i64,
+    spell_name: String,
+    is_critical: bool,
+}
+
 #[derive(Debug, Default)]
 pub struct FightTracker {
     fight_id: Option<u64>,
     participants: HashMap<i64, Combatant>,
     summon_owner: HashMap<String, i64>,
-    current_caster: Option<i64>,
+    current_cast: Option<CurrentCast>,
 }
 
 impl FightTracker {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    fn reset(&mut self) {
+        self.fight_id = None;
+        self.participants.clear();
+        self.summon_owner.clear();
+        self.current_cast = None;
     }
 
     fn resolve_owner_entity_id(&self, name: &str) -> Option<i64> {
@@ -72,10 +88,7 @@ impl FightTracker {
     pub fn process(&mut self, event: LogEvent) -> Vec<FightEvent> {
         match event {
             LogEvent::FightCreationDetected => {
-                self.fight_id = None;
-                self.participants.clear();
-                self.summon_owner.clear();
-                self.current_caster = None;
+                self.reset();
                 Vec::new()
             }
             LogEvent::FighterJoined {
@@ -124,8 +137,18 @@ impl FightTracker {
                 }
                 Vec::new()
             }
-            LogEvent::SpellCast { actor_name } => {
-                self.current_caster = self.resolve_owner_entity_id(&actor_name);
+            LogEvent::SpellCast {
+                actor_name,
+                spell_name,
+                is_critical,
+            } => {
+                self.current_cast =
+                    self.resolve_owner_entity_id(&actor_name)
+                        .map(|caster_entity_id| CurrentCast {
+                            caster_entity_id,
+                            spell_name,
+                            is_critical,
+                        });
                 Vec::new()
             }
             LogEvent::HpChange {
@@ -134,13 +157,14 @@ impl FightTracker {
                 element,
                 ..
             } => {
-                let (Some(fight_id), Some(caster_id)) = (self.fight_id, self.current_caster)
+                let (Some(fight_id), Some(current_cast)) =
+                    (self.fight_id, self.current_cast.as_ref())
                 else {
                     return Vec::new();
                 };
                 let Some(source) = self
                     .participants
-                    .get(&caster_id)
+                    .get(&current_cast.caster_entity_id)
                     .map(|combatant| combatant.name.clone())
                 else {
                     return Vec::new();
@@ -159,14 +183,13 @@ impl FightTracker {
                     amount,
                     kind,
                     element,
+                    spell_name: Some(current_cast.spell_name.clone()),
+                    is_critical: current_cast.is_critical,
                 }]
             }
             LogEvent::FightEnded { fight_id } => {
                 let resolved_fight_id = self.fight_id.unwrap_or(fight_id);
-                self.fight_id = None;
-                self.participants.clear();
-                self.summon_owner.clear();
-                self.current_caster = None;
+                self.reset();
                 vec![FightEvent::FightEnded {
                     fight_id: resolved_fight_id,
                 }]
@@ -278,6 +301,8 @@ mod tests {
 
         let spell_cast_events = tracker.process(LogEvent::SpellCast {
             actor_name: "Blampy".to_string(),
+            spell_name: "Ruse".to_string(),
+            is_critical: false,
         });
         assert_eq!(spell_cast_events, Vec::new());
 
@@ -296,6 +321,8 @@ mod tests {
                 amount: -1500,
                 kind: ActionKind::Damage,
                 element: Some("Feu".to_string()),
+                spell_name: Some("Ruse".to_string()),
+                is_critical: false,
             }]
         );
     }
@@ -331,6 +358,8 @@ mod tests {
         // doit attribuer les degats a son proprietaire, pas a l'invocation.
         tracker.process(LogEvent::SpellCast {
             actor_name: "Bombe Aveuglante".to_string(),
+            spell_name: "Explosion".to_string(),
+            is_critical: false,
         });
 
         let hp_change_events = tracker.process(LogEvent::HpChange {
@@ -348,6 +377,8 @@ mod tests {
                 amount: -300,
                 kind: ActionKind::Damage,
                 element: None,
+                spell_name: Some("Explosion".to_string()),
+                is_critical: false,
             }]
         );
     }
@@ -364,6 +395,8 @@ mod tests {
         });
         tracker.process(LogEvent::SpellCast {
             actor_name: "Marylpy".to_string(),
+            spell_name: "Mot de soin".to_string(),
+            is_critical: false,
         });
 
         let hp_change_events = tracker.process(LogEvent::HpChange {
@@ -381,6 +414,8 @@ mod tests {
                 amount: 400,
                 kind: ActionKind::Heal,
                 element: None,
+                spell_name: Some("Mot de soin".to_string()),
+                is_critical: false,
             }]
         );
     }
@@ -481,6 +516,8 @@ mod tests {
                     amount: -892,
                     kind: ActionKind::Damage,
                     element: Some("Air".to_string()),
+                    spell_name: Some("Transposition".to_string()),
+                    is_critical: false,
                 },
                 FightEvent::ActionRecorded {
                     fight_id: 1568151141,
@@ -489,6 +526,8 @@ mod tests {
                     amount: -1757,
                     kind: ActionKind::Damage,
                     element: Some("Feu".to_string()),
+                    spell_name: Some("Châtiment".to_string()),
+                    is_critical: true,
                 },
                 FightEvent::ActionRecorded {
                     fight_id: 1568151141,
@@ -497,6 +536,8 @@ mod tests {
                     amount: -1975,
                     kind: ActionKind::Damage,
                     element: Some("Feu".to_string()),
+                    spell_name: Some("Flèche explosive".to_string()),
+                    is_critical: false,
                 },
                 FightEvent::ActionRecorded {
                     fight_id: 1568151141,
@@ -505,6 +546,8 @@ mod tests {
                     amount: -5465,
                     kind: ActionKind::Damage,
                     element: Some("Feu".to_string()),
+                    spell_name: Some("Flèche explosive".to_string()),
+                    is_critical: true,
                 },
                 FightEvent::ActionRecorded {
                     fight_id: 1568151141,
@@ -513,6 +556,8 @@ mod tests {
                     amount: -1433,
                     kind: ActionKind::Damage,
                     element: Some("Terre".to_string()),
+                    spell_name: Some("Balle plombante".to_string()),
+                    is_critical: true,
                 },
                 FightEvent::FightEnded {
                     fight_id: 1568151141

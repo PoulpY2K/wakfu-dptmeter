@@ -2,8 +2,8 @@ use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
 use std::path::PathBuf;
 use std::time::Duration;
-use notify_debouncer_mini::notify::RecursiveMode;
-use notify_debouncer_mini::{new_debouncer, DebounceEventResult, Debouncer};
+use notify_debouncer_mini::notify::{self, PollWatcher, RecursiveMode};
+use notify_debouncer_mini::{new_debouncer_opt, Config, DebounceEventResult, Debouncer};
 use tauri::{AppHandle, Emitter};
 
 pub fn wakfu_log_path() -> PathBuf {
@@ -16,49 +16,74 @@ pub fn wakfu_log_path() -> PathBuf {
         .join("wakfu.log")
 }
 
+// Windows' native file-change notifications (ReadDirectoryChangesW) are
+// documented by notify itself as unreliable for files written by another
+// process. PollWatcher checks file metadata on a fixed interval instead of
+// relying on OS-delivered events, trading a bit of latency for events that
+// actually always arrive.
+const POLL_INTERVAL: Duration = Duration::from_millis(500);
+const DEBOUNCE_TIMEOUT: Duration = Duration::from_millis(100);
+
 pub fn watch_log_file(
     app_handle: AppHandle,
     log_path: PathBuf,
-) -> notify_debouncer_mini::notify::Result<Debouncer<notify_debouncer_mini::notify::RecommendedWatcher>> {
+) -> notify::Result<Debouncer<PollWatcher>> {
     if let Some(parent) = log_path.parent() {
         std::fs::create_dir_all(parent)?;
     }
     if !log_path.exists() {
-        std::fs::File::create(&log_path)?;
+        File::create(&log_path)?;
     }
 
     let mut tailer = LogTailer::new(log_path.clone())?;
     let mut tracker = crate::fight_tracker::FightTracker::new();
 
-    let mut debouncer = new_debouncer(Duration::from_millis(500), move |result: DebounceEventResult| {
-        if let Err(err) = result {
-            log::error!("wakfu log watch error: {err:?}");
-            return;
-        }
+    let notify_config = notify::Config::default().with_poll_interval(POLL_INTERVAL);
+    let config = Config::default()
+        .with_timeout(DEBOUNCE_TIMEOUT)
+        .with_notify_config(notify_config);
 
-        let lines = match tailer.read_new_lines() {
-            Ok(lines) => lines,
-            Err(err) => {
-                log::error!("failed to read new wakfu log lines: {err}");
+    let mut debouncer =
+        new_debouncer_opt::<_, PollWatcher>(config, move |result: DebounceEventResult| {
+            if let Err(err) = result {
+                log::error!("wakfu log watch error: {err:?}");
                 return;
             }
-        };
-
-        for line in lines {
-            let log_event = crate::log_parser::parse_line(&line);
-            for fight_event in tracker.process(log_event) {
-                if let Err(err) = app_handle.emit("fight-event", &fight_event) {
-                    log::error!("failed to emit fight-event: {err}");
-                }
-            }
-        }
-    })?;
+            process_new_lines(&mut tailer, &mut tracker, &app_handle);
+        })?;
 
     debouncer
         .watcher()
         .watch(&log_path, RecursiveMode::NonRecursive)?;
 
     Ok(debouncer)
+}
+
+fn process_new_lines(
+    tailer: &mut LogTailer,
+    tracker: &mut crate::fight_tracker::FightTracker,
+    app_handle: &AppHandle,
+) {
+    let lines = match tailer.read_new_lines() {
+        Ok(lines) => lines,
+        Err(err) => {
+            log::error!("failed to read new wakfu log lines: {err}");
+            return;
+        }
+    };
+
+    for line in lines {
+        let log_event = crate::log_parser::parse_line(&line);
+        if !matches!(log_event, crate::log_parser::LogEvent::Unrecognized) {
+            log::info!("wakfu log parsed: {log_event:?}");
+        }
+        for fight_event in tracker.process(log_event) {
+            log::info!("fight-event emitted: {fight_event:?}");
+            if let Err(err) = app_handle.emit("fight-event", &fight_event) {
+                log::error!("failed to emit fight-event: {err}");
+            }
+        }
+    }
 }
 
 pub struct LogTailer {

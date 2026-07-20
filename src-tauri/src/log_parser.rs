@@ -6,26 +6,27 @@ static FIGHT_CREATION_RE: LazyLock<Regex> =
 
 static FIGHTER_JOINED_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(
-        r"\[_FL_\] fightId=(\d+) (.+?) breed : \d+ \[(-?\d+)\] isControlledByAI=(true|false) obstacleId : -?\d+ join the fight at \{Point3 : \([^)]*\)\}",
+        r"\[_FL_] fightId=(\d+) (.+?) breed : \d+ \[(-?\d+)] isControlledByAI=(true|false) obstacleId : -?\d+ join the fight at \{Point3 : \([^)]*\)}",
     )
     .unwrap()
 });
 
 static SUMMON_INVOKED_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"\(combat\)\] (.+?): Invoque un\(e\) (.+?)\s*$").unwrap()
+    Regex::new(r"\(combat\)] (.+?): Invoque un\(e\) (.+?)\s*$").unwrap()
 });
 
-static SPELL_CAST_RE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"\(combat\)\] (.+?) lance le sort ").unwrap());
+static SPELL_CAST_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"\(combat\)] (.+?) lance le sort (.+?)(\s+\(Critiques\))?\s*$").unwrap()
+});
 
 static HP_CHANGE_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"\(combat\)\] (.+?): ([+-]?[\d\s]+?) PV((?:\s+\([^)]+\))*)\s*$").unwrap()
+    Regex::new(r"\(combat\)] (.+?): ([+-]?[\d\s]+?) PV((?:\s+\([^)]+\))*)\s*$").unwrap()
 });
 
 static HP_CHANGE_TAG_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\(([^)]+)\)").unwrap());
 
 static FIGHT_ENDED_RE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"\[FIGHT\] End fight with id (\d+)").unwrap());
+    LazyLock::new(|| Regex::new(r"\[FIGHT] End fight with id (\d+)").unwrap());
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum LogEvent {
@@ -42,6 +43,8 @@ pub enum LogEvent {
     },
     SpellCast {
         actor_name: String,
+        spell_name: String,
+        is_critical: bool,
     },
     HpChange {
         name: String,
@@ -56,66 +59,81 @@ pub enum LogEvent {
 }
 
 pub fn parse_line(line: &str) -> LogEvent {
-    if FIGHT_CREATION_RE.is_match(line) {
-        return LogEvent::FightCreationDetected;
-    }
+    try_fight_creation(line)
+        .or_else(|| try_fighter_joined(line))
+        .or_else(|| try_summon_invoked(line))
+        .or_else(|| try_spell_cast(line))
+        .or_else(|| try_hp_change(line))
+        .or_else(|| try_fight_ended(line))
+        .unwrap_or(LogEvent::Unrecognized)
+}
 
-    if let Some(caps) = FIGHTER_JOINED_RE.captures(line) {
-        if let (Ok(fight_id), Ok(entity_id)) = (caps[1].parse::<u64>(), caps[3].parse::<i64>()) {
-            return LogEvent::FighterJoined {
-                fight_id,
-                name: caps[2].to_string(),
-                entity_id,
-                is_controlled_by_ai: &caps[4] == "true",
-            };
-        }
-    }
+fn try_fight_creation(line: &str) -> Option<LogEvent> {
+    FIGHT_CREATION_RE
+        .is_match(line)
+        .then_some(LogEvent::FightCreationDetected)
+}
 
-    if let Some(caps) = SUMMON_INVOKED_RE.captures(line) {
-        return LogEvent::SummonInvoked {
-            owner_name: caps[1].to_string(),
-            summon_name: caps[2].to_string(),
-        };
-    }
+fn try_fighter_joined(line: &str) -> Option<LogEvent> {
+    let caps = FIGHTER_JOINED_RE.captures(line)?;
+    let fight_id = caps[1].parse::<u64>().ok()?;
+    let entity_id = caps[3].parse::<i64>().ok()?;
+    Some(LogEvent::FighterJoined {
+        fight_id,
+        name: caps[2].to_string(),
+        entity_id,
+        is_controlled_by_ai: &caps[4] == "true",
+    })
+}
 
-    if let Some(caps) = SPELL_CAST_RE.captures(line) {
-        return LogEvent::SpellCast {
-            actor_name: caps[1].to_string(),
-        };
-    }
+fn try_summon_invoked(line: &str) -> Option<LogEvent> {
+    let caps = SUMMON_INVOKED_RE.captures(line)?;
+    Some(LogEvent::SummonInvoked {
+        owner_name: caps[1].to_string(),
+        summon_name: caps[2].to_string(),
+    })
+}
 
-    if let Some(caps) = HP_CHANGE_RE.captures(line) {
-        if let Ok(amount) = caps[2]
-            .chars()
-            .filter(|c| !c.is_whitespace())
-            .collect::<String>()
-            .parse::<i32>()
-        {
-            let tags: Vec<&str> = HP_CHANGE_TAG_RE
-                .captures_iter(&caps[3])
-                .map(|tag_caps| tag_caps.get(1).unwrap().as_str())
-                .collect();
-            let is_parried = tags.iter().any(|t| *t == "Parade !");
-            let element = tags
-                .iter()
-                .find(|t| **t != "Parade !")
-                .map(|s| s.to_string());
-            return LogEvent::HpChange {
-                name: caps[1].to_string(),
-                amount,
-                element,
-                is_parried,
-            };
-        }
-    }
+fn try_spell_cast(line: &str) -> Option<LogEvent> {
+    let caps = SPELL_CAST_RE.captures(line)?;
+    Some(LogEvent::SpellCast {
+        actor_name: caps[1].to_string(),
+        spell_name: caps[2].to_string(),
+        is_critical: caps.get(3).is_some(),
+    })
+}
 
-    if let Some(caps) = FIGHT_ENDED_RE.captures(line) {
-        if let Ok(fight_id) = caps[1].parse::<u64>() {
-            return LogEvent::FightEnded { fight_id };
-        }
-    }
+fn try_hp_change(line: &str) -> Option<LogEvent> {
+    let caps = HP_CHANGE_RE.captures(line)?;
+    let amount = caps[2]
+        .chars()
+        .filter(|c| !c.is_whitespace())
+        .collect::<String>()
+        .parse::<i32>()
+        .ok()?;
 
-    LogEvent::Unrecognized
+    let tags: Vec<&str> = HP_CHANGE_TAG_RE
+        .captures_iter(&caps[3])
+        .map(|tag_caps| tag_caps.get(1).unwrap().as_str())
+        .collect();
+    let is_parried = tags.iter().any(|t| *t == "Parade !");
+    let element = tags
+        .iter()
+        .find(|t| **t != "Parade !")
+        .map(|s| s.to_string());
+
+    Some(LogEvent::HpChange {
+        name: caps[1].to_string(),
+        amount,
+        element,
+        is_parried,
+    })
+}
+
+fn try_fight_ended(line: &str) -> Option<LogEvent> {
+    let caps = FIGHT_ENDED_RE.captures(line)?;
+    let fight_id = caps[1].parse::<u64>().ok()?;
+    Some(LogEvent::FightEnded { fight_id })
 }
 
 #[cfg(test)]
@@ -182,6 +200,21 @@ mod tests {
             parse_line(line),
             LogEvent::SpellCast {
                 actor_name: "Soeur Zerker".to_string(),
+                spell_name: "Transposition".to_string(),
+                is_critical: false,
+            }
+        );
+    }
+
+    #[test]
+    fn parses_spell_cast_line_with_critique_suffix() {
+        let line = " INFO 12:50:21,535 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker lance le sort Châtiment (Critiques)";
+        assert_eq!(
+            parse_line(line),
+            LogEvent::SpellCast {
+                actor_name: "Soeur Zerker".to_string(),
+                spell_name: "Châtiment".to_string(),
+                is_critical: true,
             }
         );
     }
