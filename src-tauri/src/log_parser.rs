@@ -19,8 +19,10 @@ static SPELL_CAST_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"\(combat\)\] (.+?) lance le sort ").unwrap());
 
 static HP_CHANGE_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"\(combat\)\] (.+?): (-?[\d\s]+?) PV(?:\s+\(([^)]+)\))?( \(Parade !\))?\s*$").unwrap()
+    Regex::new(r"\(combat\)\] (.+?): ([+-]?[\d\s]+?) PV((?:\s+\([^)]+\))*)\s*$").unwrap()
 });
+
+static HP_CHANGE_TAG_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\(([^)]+)\)").unwrap());
 
 static FIGHT_ENDED_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"\[FIGHT\] End fight with id (\d+)").unwrap());
@@ -59,12 +61,14 @@ pub fn parse_line(line: &str) -> LogEvent {
     }
 
     if let Some(caps) = FIGHTER_JOINED_RE.captures(line) {
-        return LogEvent::FighterJoined {
-            fight_id: caps[1].parse().expect("fight_id should be a valid u64"),
-            name: caps[2].to_string(),
-            entity_id: caps[3].parse().expect("entity_id should be a valid i64"),
-            is_controlled_by_ai: &caps[4] == "true",
-        };
+        if let (Ok(fight_id), Ok(entity_id)) = (caps[1].parse::<u64>(), caps[3].parse::<i64>()) {
+            return LogEvent::FighterJoined {
+                fight_id,
+                name: caps[2].to_string(),
+                entity_id,
+                is_controlled_by_ai: &caps[4] == "true",
+            };
+        }
     }
 
     if let Some(caps) = SUMMON_INVOKED_RE.captures(line) {
@@ -81,24 +85,34 @@ pub fn parse_line(line: &str) -> LogEvent {
     }
 
     if let Some(caps) = HP_CHANGE_RE.captures(line) {
-        let amount: i32 = caps[2]
+        if let Ok(amount) = caps[2]
             .chars()
             .filter(|c| !c.is_whitespace())
             .collect::<String>()
-            .parse()
-            .expect("HP change amount should be a valid integer");
-        return LogEvent::HpChange {
-            name: caps[1].to_string(),
-            amount,
-            element: caps.get(3).map(|m| m.as_str().to_string()),
-            is_parried: caps.get(4).is_some(),
-        };
+            .parse::<i32>()
+        {
+            let tags: Vec<&str> = HP_CHANGE_TAG_RE
+                .captures_iter(&caps[3])
+                .map(|tag_caps| tag_caps.get(1).unwrap().as_str())
+                .collect();
+            let is_parried = tags.iter().any(|t| *t == "Parade !");
+            let element = tags
+                .iter()
+                .find(|t| **t != "Parade !")
+                .map(|s| s.to_string());
+            return LogEvent::HpChange {
+                name: caps[1].to_string(),
+                amount,
+                element,
+                is_parried,
+            };
+        }
     }
 
     if let Some(caps) = FIGHT_ENDED_RE.captures(line) {
-        return LogEvent::FightEnded {
-            fight_id: caps[1].parse().expect("fight_id should be a valid u64"),
-        };
+        if let Ok(fight_id) = caps[1].parse::<u64>() {
+            return LogEvent::FightEnded { fight_id };
+        }
     }
 
     LogEvent::Unrecognized
@@ -246,5 +260,53 @@ mod tests {
 
         assert_eq!(parse_line(not_found_line), LogEvent::Unrecognized);
         assert_eq!(parse_line(join_procedure_line), LogEvent::Unrecognized);
+    }
+
+    #[test]
+    fn parses_heal_line_with_leading_plus_sign() {
+        // Ligne 7 de resources/wakfu-with-heal.log
+        let line = " INFO 16:21:32,663 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: +343 PV (Eau)";
+        assert_eq!(
+            parse_line(line),
+            LogEvent::HpChange {
+                name: "Blampy".to_string(),
+                amount: 343,
+                element: Some("Eau".to_string()),
+                is_parried: false,
+            }
+        );
+    }
+
+    #[test]
+    fn parses_hp_change_line_with_four_trailing_tags() {
+        // Ligne 18 de resources/wakfu-with-heal.log
+        let line = " INFO 16:21:35,075 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Lumilpy: -817 PV (Lumière) (Feu) (Parade !) (Enflammé)";
+        assert_eq!(
+            parse_line(line),
+            LogEvent::HpChange {
+                name: "Lumilpy".to_string(),
+                amount: -817,
+                element: Some("Lumière".to_string()),
+                is_parried: true,
+            }
+        );
+    }
+
+    #[test]
+    fn does_not_panic_on_fighter_joined_line_with_out_of_range_fight_id() {
+        let line = " INFO 12:50:14,595 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=99999999999999999999999999999999999999 Soeur Zerker breed : 4214 [-1724034221200073] isControlledByAI=true obstacleId : -1 join the fight at {Point3 : (-1, 3, 0)}";
+        assert_eq!(parse_line(line), LogEvent::Unrecognized);
+    }
+
+    #[test]
+    fn does_not_panic_on_fight_ended_line_with_out_of_range_fight_id() {
+        let line = " INFO 12:50:50,028 [AWT-EventQueue-0] (aWF:91) - [FIGHT] End fight with id 99999999999999999999999999999999999999";
+        assert_eq!(parse_line(line), LogEvent::Unrecognized);
+    }
+
+    #[test]
+    fn does_not_panic_on_hp_change_line_with_out_of_range_amount() {
+        let line = " INFO 12:50:20,635 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: -99999999999999999999999999999999999999 PV (Air)";
+        assert_eq!(parse_line(line), LogEvent::Unrecognized);
     }
 }
