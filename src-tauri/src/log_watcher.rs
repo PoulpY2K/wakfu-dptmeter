@@ -20,6 +20,13 @@ pub fn watch_log_file(
     app_handle: AppHandle,
     log_path: PathBuf,
 ) -> notify_debouncer_mini::notify::Result<Debouncer<notify_debouncer_mini::notify::RecommendedWatcher>> {
+    if let Some(parent) = log_path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    if !log_path.exists() {
+        std::fs::File::create(&log_path)?;
+    }
+
     let mut tailer = LogTailer::new(log_path.clone())?;
     let mut tracker = crate::fight_tracker::FightTracker::new();
 

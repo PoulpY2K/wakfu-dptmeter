@@ -28,12 +28,16 @@ pub fn run() {
 
             log::info!("Watching wakfu log file at {}", log_path.display());
 
-            let debouncer = log_watcher::watch_log_file(app_handle, log_path)
-                .expect("failed to start watching the wakfu log file");
-
-            // Intentionally leaked: the watcher must run for the whole app
-            // process, and `Debouncer` stops watching as soon as it is dropped.
-            std::mem::forget(debouncer);
+            match log_watcher::watch_log_file(app_handle, log_path) {
+                Ok(debouncer) => {
+                    // Intentionally leaked: the watcher must run for the whole app
+                    // process, and `Debouncer` stops watching as soon as it is dropped.
+                    std::mem::forget(debouncer);
+                }
+                Err(err) => {
+                    log::error!("failed to start watching the wakfu log file: {err}");
+                }
+            }
 
             Ok(())
         })
