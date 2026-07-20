@@ -1,4 +1,5 @@
 mod log_parser;
+mod fight_tracker;
 
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
