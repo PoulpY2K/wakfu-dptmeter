@@ -427,4 +427,97 @@ mod tests {
             ]
         );
     }
+
+    #[test]
+    fn replays_full_fight_log_and_produces_expected_event_sequence() {
+        let log_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("..")
+            .join("resources")
+            .join("wakfu-one-fight.log");
+        let content = std::fs::read_to_string(&log_path)
+            .expect("failed to read resources/wakfu-one-fight.log");
+
+        let mut tracker = FightTracker::new();
+        let mut events = Vec::new();
+        for line in content.lines() {
+            let log_event = crate::log_parser::parse_line(line);
+            events.extend(tracker.process(log_event));
+        }
+
+        assert_eq!(
+            events,
+            vec![
+                FightEvent::FightStarted {
+                    fight_id: 1568151141
+                },
+                FightEvent::CombatantIdentified {
+                    fight_id: 1568151141,
+                    name: "Soeur Zerker".to_string(),
+                    entity_id: -1724034221200073,
+                    side: Side::Enemy,
+                },
+                FightEvent::CombatantIdentified {
+                    fight_id: 1568151141,
+                    name: "Blampy".to_string(),
+                    entity_id: 5547447,
+                    side: Side::Player,
+                },
+                FightEvent::CombatantIdentified {
+                    fight_id: 1568151141,
+                    name: "Distipy".to_string(),
+                    entity_id: 11370102,
+                    side: Side::Player,
+                },
+                FightEvent::CombatantIdentified {
+                    fight_id: 1568151141,
+                    name: "Marylpy".to_string(),
+                    entity_id: 11370104,
+                    side: Side::Player,
+                },
+                FightEvent::ActionRecorded {
+                    fight_id: 1568151141,
+                    source: "Soeur Zerker".to_string(),
+                    target: "Distipy".to_string(),
+                    amount: -892,
+                    kind: ActionKind::Damage,
+                    element: Some("Air".to_string()),
+                },
+                FightEvent::ActionRecorded {
+                    fight_id: 1568151141,
+                    source: "Soeur Zerker".to_string(),
+                    target: "Blampy".to_string(),
+                    amount: -1757,
+                    kind: ActionKind::Damage,
+                    element: Some("Feu".to_string()),
+                },
+                FightEvent::ActionRecorded {
+                    fight_id: 1568151141,
+                    source: "Distipy".to_string(),
+                    target: "Soeur Zerker".to_string(),
+                    amount: -1975,
+                    kind: ActionKind::Damage,
+                    element: Some("Feu".to_string()),
+                },
+                FightEvent::ActionRecorded {
+                    fight_id: 1568151141,
+                    source: "Distipy".to_string(),
+                    target: "Soeur Zerker".to_string(),
+                    amount: -5465,
+                    kind: ActionKind::Damage,
+                    element: Some("Feu".to_string()),
+                },
+                FightEvent::ActionRecorded {
+                    fight_id: 1568151141,
+                    source: "Blampy".to_string(),
+                    target: "Soeur Zerker".to_string(),
+                    amount: -1433,
+                    kind: ActionKind::Damage,
+                    element: Some("Terre".to_string()),
+                },
+                FightEvent::FightEnded {
+                    fight_id: 1568151141
+                },
+            ]
+        );
+    }
 }
