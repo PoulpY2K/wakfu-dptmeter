@@ -1,6 +1,58 @@
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
 use std::path::PathBuf;
+use std::time::Duration;
+use notify_debouncer_mini::notify::RecursiveMode;
+use notify_debouncer_mini::{new_debouncer, DebounceEventResult, Debouncer};
+use tauri::{AppHandle, Emitter};
+
+pub fn wakfu_log_path() -> PathBuf {
+    let appdata = std::env::var("APPDATA").expect("APPDATA environment variable is not set");
+    PathBuf::from(appdata)
+        .join("zaap")
+        .join("gamesLogs")
+        .join("wakfu")
+        .join("logs")
+        .join("wakfu.log")
+}
+
+pub fn watch_log_file(
+    app_handle: AppHandle,
+    log_path: PathBuf,
+) -> notify_debouncer_mini::notify::Result<Debouncer<notify_debouncer_mini::notify::RecommendedWatcher>> {
+    let mut tailer = LogTailer::new(log_path.clone())?;
+    let mut tracker = crate::fight_tracker::FightTracker::new();
+
+    let mut debouncer = new_debouncer(Duration::from_millis(500), move |result: DebounceEventResult| {
+        if let Err(err) = result {
+            log::error!("wakfu log watch error: {err:?}");
+            return;
+        }
+
+        let lines = match tailer.read_new_lines() {
+            Ok(lines) => lines,
+            Err(err) => {
+                log::error!("failed to read new wakfu log lines: {err}");
+                return;
+            }
+        };
+
+        for line in lines {
+            let log_event = crate::log_parser::parse_line(&line);
+            for fight_event in tracker.process(log_event) {
+                if let Err(err) = app_handle.emit("fight-event", &fight_event) {
+                    log::error!("failed to emit fight-event: {err}");
+                }
+            }
+        }
+    })?;
+
+    debouncer
+        .watcher()
+        .watch(&log_path, RecursiveMode::NonRecursive)?;
+
+    Ok(debouncer)
+}
 
 pub struct LogTailer {
     path: PathBuf,

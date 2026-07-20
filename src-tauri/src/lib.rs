@@ -5,9 +5,6 @@ mod log_watcher;
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
-const WAKFU_CHAT_LOG_PATH: &str =
-    "%APPDATA%\\zaap\\gamesLogs\\wakfu\\logs\\wakfu.log";
-
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
@@ -27,24 +24,16 @@ pub fn run() {
         })
         .setup(|app| {
             let app_handle = app.handle().clone();
+            let log_path = log_watcher::wakfu_log_path();
 
-            log::info!(
-                "Create threads and setup debouncing watch for log file {}",
-                WAKFU_CHAT_LOG_PATH
-            );
+            log::info!("Watching wakfu log file at {}", log_path.display());
 
-            //let (tx, rx) = std::sync::mpsc::channel();
-            //let mut debouncer = declare_debouncer(tx);
+            let debouncer = log_watcher::watch_log_file(app_handle, log_path)
+                .expect("failed to start watching the wakfu log file");
 
-            tauri::async_runtime::spawn(async move {
-                log::info!("Initializing watch and waiting for events");
-                /*debouncer
-                    .watcher()
-                    .watch(Path::new(WAKFU_CHAT_LOG_PATH), RecursiveMode::NonRecursive)
-                    .unwrap();
-
-                handle_debouncer_result(&app_handle, rx);*/
-            });
+            // Intentionally leaked: the watcher must run for the whole app
+            // process, and `Debouncer` stops watching as soon as it is dropped.
+            std::mem::forget(debouncer);
 
             Ok(())
         })
