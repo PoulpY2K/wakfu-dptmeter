@@ -18,6 +18,10 @@ static SUMMON_INVOKED_RE: LazyLock<Regex> = LazyLock::new(|| {
 static SPELL_CAST_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"\(combat\)\] (.+?) lance le sort ").unwrap());
 
+static HP_CHANGE_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"\(combat\)\] (.+?): (-?[\d ]+?) PV(?:\s+\(([^)]+)\))?( \(Parade !\))?\s*$").unwrap()
+});
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum LogEvent {
     FightCreationDetected,
@@ -33,6 +37,12 @@ pub enum LogEvent {
     },
     SpellCast {
         actor_name: String,
+    },
+    HpChange {
+        name: String,
+        amount: i32,
+        element: Option<String>,
+        is_parried: bool,
     },
     Unrecognized,
 }
@@ -61,6 +71,19 @@ pub fn parse_line(line: &str) -> LogEvent {
     if let Some(caps) = SPELL_CAST_RE.captures(line) {
         return LogEvent::SpellCast {
             actor_name: caps[1].to_string(),
+        };
+    }
+
+    if let Some(caps) = HP_CHANGE_RE.captures(line) {
+        let amount: i32 = caps[2]
+            .replace(' ', "")
+            .parse()
+            .expect("HP change amount should be a valid integer");
+        return LogEvent::HpChange {
+            name: caps[1].to_string(),
+            amount,
+            element: caps.get(3).map(|m| m.as_str().to_string()),
+            is_parried: caps.get(4).is_some(),
         };
     }
 
@@ -133,5 +156,58 @@ mod tests {
                 actor_name: "Soeur Zerker".to_string(),
             }
         );
+    }
+
+    #[test]
+    fn parses_simple_hp_change_line() {
+        let line = " INFO 12:50:20,635 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: -892 PV (Air)";
+        assert_eq!(
+            parse_line(line),
+            LogEvent::HpChange {
+                name: "Distipy".to_string(),
+                amount: -892,
+                element: Some("Air".to_string()),
+                is_parried: false,
+            }
+        );
+    }
+
+    #[test]
+    fn parses_hp_change_with_thousands_separator_and_double_space() {
+        let line = " INFO 12:50:23,547 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: -1 757 PV  (Feu)";
+        assert_eq!(
+            parse_line(line),
+            LogEvent::HpChange {
+                name: "Blampy".to_string(),
+                amount: -1757,
+                element: Some("Feu".to_string()),
+                is_parried: false,
+            }
+        );
+    }
+
+    #[test]
+    fn parses_parried_hp_change_line() {
+        let line = " INFO 12:50:28,480 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: -1 975 PV  (Feu) (Parade !)";
+        assert_eq!(
+            parse_line(line),
+            LogEvent::HpChange {
+                name: "Soeur Zerker".to_string(),
+                amount: -1975,
+                element: Some("Feu".to_string()),
+                is_parried: true,
+            }
+        );
+    }
+
+    #[test]
+    fn does_not_misfire_on_non_pv_status_lines() {
+        let pm_line = " INFO 12:50:32,397 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: -2 PM max (Parti pris)";
+        let pw_line = " INFO 12:50:19,244 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Marylpy: 0 PW (Pioche mélangée)";
+        let pa_line = " INFO 12:50:32,396 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 2 PA (Parti pris)";
+
+        assert_eq!(parse_line(pm_line), LogEvent::Unrecognized);
+        assert_eq!(parse_line(pw_line), LogEvent::Unrecognized);
+        assert_eq!(parse_line(pa_line), LogEvent::Unrecognized);
     }
 }
