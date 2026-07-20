@@ -15,6 +15,9 @@ static SUMMON_INVOKED_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"\(combat\)\] (.+?): Invoque un\(e\) (.+?)\s*$").unwrap()
 });
 
+static SPELL_CAST_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"\(combat\)\] (.+?) lance le sort ").unwrap());
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum LogEvent {
     FightCreationDetected,
@@ -27,6 +30,9 @@ pub enum LogEvent {
     SummonInvoked {
         owner_name: String,
         summon_name: String,
+    },
+    SpellCast {
+        actor_name: String,
     },
     Unrecognized,
 }
@@ -49,6 +55,12 @@ pub fn parse_line(line: &str) -> LogEvent {
         return LogEvent::SummonInvoked {
             owner_name: caps[1].to_string(),
             summon_name: caps[2].to_string(),
+        };
+    }
+
+    if let Some(caps) = SPELL_CAST_RE.captures(line) {
+        return LogEvent::SpellCast {
+            actor_name: caps[1].to_string(),
         };
     }
 
@@ -108,6 +120,17 @@ mod tests {
             LogEvent::SummonInvoked {
                 owner_name: "Blampy".to_string(),
                 summon_name: "Bombe Aveuglante".to_string(),
+            }
+        );
+    }
+
+    #[test]
+    fn parses_spell_cast_line() {
+        let line = " INFO 12:50:19,275 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker lance le sort Transposition";
+        assert_eq!(
+            parse_line(line),
+            LogEvent::SpellCast {
+                actor_name: "Soeur Zerker".to_string(),
             }
         );
     }
