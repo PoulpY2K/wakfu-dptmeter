@@ -22,6 +22,9 @@ static HP_CHANGE_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"\(combat\)\] (.+?): (-?[\d\s]+?) PV(?:\s+\(([^)]+)\))?( \(Parade !\))?\s*$").unwrap()
 });
 
+static FIGHT_ENDED_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"\[FIGHT\] End fight with id (\d+)").unwrap());
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum LogEvent {
     FightCreationDetected,
@@ -43,6 +46,9 @@ pub enum LogEvent {
         amount: i32,
         element: Option<String>,
         is_parried: bool,
+    },
+    FightEnded {
+        fight_id: u64,
     },
     Unrecognized,
 }
@@ -86,6 +92,12 @@ pub fn parse_line(line: &str) -> LogEvent {
             amount,
             element: caps.get(3).map(|m| m.as_str().to_string()),
             is_parried: caps.get(4).is_some(),
+        };
+    }
+
+    if let Some(caps) = FIGHT_ENDED_RE.captures(line) {
+        return LogEvent::FightEnded {
+            fight_id: caps[1].parse().expect("fight_id should be a valid u64"),
         };
     }
 
@@ -211,5 +223,28 @@ mod tests {
         assert_eq!(parse_line(pm_line), LogEvent::Unrecognized);
         assert_eq!(parse_line(pw_line), LogEvent::Unrecognized);
         assert_eq!(parse_line(pa_line), LogEvent::Unrecognized);
+    }
+
+    #[test]
+    fn parses_fight_ended_line() {
+        let line = " INFO 12:50:50,028 [AWT-EventQueue-0] (aWF:91) - [FIGHT] End fight with id 1568151141";
+        assert_eq!(
+            parse_line(line),
+            LogEvent::FightEnded {
+                fight_id: 1568151141,
+            }
+        );
+    }
+
+    #[test]
+    fn ignores_documented_noise_lines_as_unrecognized() {
+        // Cas limites de la spec : ces lignes ne doivent jamais produire d'evenement.
+        let not_found_line =
+            " WARN 12:50:14,498 [AWT-EventQueue-0] (cky:29) - The fight with the id 1568151141 has not been found";
+        let join_procedure_line =
+            " INFO 12:50:22,848 [AWT-EventQueue-0] (cko:37) - Starting join procedure for 11049475";
+
+        assert_eq!(parse_line(not_found_line), LogEvent::Unrecognized);
+        assert_eq!(parse_line(join_procedure_line), LogEvent::Unrecognized);
     }
 }
