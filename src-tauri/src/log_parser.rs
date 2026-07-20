@@ -19,7 +19,7 @@ static SPELL_CAST_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"\(combat\)\] (.+?) lance le sort ").unwrap());
 
 static HP_CHANGE_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"\(combat\)\] (.+?): (-?[\d ]+?) PV(?:\s+\(([^)]+)\))?( \(Parade !\))?\s*$").unwrap()
+    Regex::new(r"\(combat\)\] (.+?): (-?[\d\s]+?) PV(?:\s+\(([^)]+)\))?( \(Parade !\))?\s*$").unwrap()
 });
 
 #[derive(Debug, Clone, PartialEq)]
@@ -76,7 +76,9 @@ pub fn parse_line(line: &str) -> LogEvent {
 
     if let Some(caps) = HP_CHANGE_RE.captures(line) {
         let amount: i32 = caps[2]
-            .replace(' ', "")
+            .chars()
+            .filter(|c| !c.is_whitespace())
+            .collect::<String>()
             .parse()
             .expect("HP change amount should be a valid integer");
         return LogEvent::HpChange {
@@ -174,7 +176,7 @@ mod tests {
 
     #[test]
     fn parses_hp_change_with_thousands_separator_and_double_space() {
-        let line = " INFO 12:50:23,547 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: -1 757 PV  (Feu)";
+        let line = " INFO 12:50:23,547 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: -1\u{202F}757 PV  (Feu)";
         assert_eq!(
             parse_line(line),
             LogEvent::HpChange {
@@ -188,7 +190,7 @@ mod tests {
 
     #[test]
     fn parses_parried_hp_change_line() {
-        let line = " INFO 12:50:28,480 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: -1 975 PV  (Feu) (Parade !)";
+        let line = " INFO 12:50:28,480 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: -1\u{202F}975 PV  (Feu) (Parade !)";
         assert_eq!(
             parse_line(line),
             LogEvent::HpChange {
