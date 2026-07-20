@@ -1,40 +1,12 @@
 mod log_parser;
 mod fight_tracker;
+mod log_watcher;
 
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
 const WAKFU_CHAT_LOG_PATH: &str =
     "%APPDATA%\\zaap\\gamesLogs\\wakfu\\logs\\wakfu.log";
-
-#[cfg(test)]
-mod tests {
-    use std::fs::{read_to_string, remove_file};
-    use std::path::PathBuf;
-    use std::fs::File;
-    use std::io::Write;
-
-    #[test]
-    fn writes_and_contains_creation_du_combat() {
-        // chemin vers un fichier temporaire
-        let mut path: PathBuf = std::env::temp_dir();
-        path.push("wakfu_test_log.txt");
-
-        // écrire dans le fichier
-        let mut file = File::create(&path).expect("failed to create temp file");
-        writeln!(file, "LIGNE 1").unwrap();
-        writeln!(file, "CREATION DU COMBAT").unwrap();
-        writeln!(file, "LIGNE 3").unwrap();
-        file.flush().unwrap();
-
-        // lire et vérifier
-        let content = read_to_string(&path).expect("failed to read temp file");
-        assert!(content.contains("CREATION DU COMBAT"));
-
-        // cleanup
-        let _ = remove_file(&path);
-    }
-}
 
 #[tauri::command]
 fn greet(name: &str) -> String {
