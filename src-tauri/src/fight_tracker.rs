@@ -161,7 +161,17 @@ impl FightTracker {
                     element,
                 }]
             }
-            _ => Vec::new(),
+            LogEvent::FightEnded { fight_id } => {
+                let resolved_fight_id = self.fight_id.unwrap_or(fight_id);
+                self.fight_id = None;
+                self.participants.clear();
+                self.summon_owner.clear();
+                self.current_caster = None;
+                vec![FightEvent::FightEnded {
+                    fight_id: resolved_fight_id,
+                }]
+            }
+            LogEvent::Unrecognized => Vec::new(),
         }
     }
 }
@@ -372,6 +382,49 @@ mod tests {
                 kind: ActionKind::Heal,
                 element: None,
             }]
+        );
+    }
+
+    #[test]
+    fn fight_ended_emits_event_and_resets_state_for_the_next_fight() {
+        let mut tracker = FightTracker::new();
+        tracker.process(LogEvent::FightCreationDetected);
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Blampy".to_string(),
+            entity_id: 5547447,
+            is_controlled_by_ai: false,
+        });
+
+        let ended_events = tracker.process(LogEvent::FightEnded {
+            fight_id: 1568151141,
+        });
+        assert_eq!(
+            ended_events,
+            vec![FightEvent::FightEnded {
+                fight_id: 1568151141
+            }]
+        );
+
+        // Un nouveau combat doit a nouveau emettre FightStarted : l'etat a bien ete remis a zero.
+        tracker.process(LogEvent::FightCreationDetected);
+        let next_fight_events = tracker.process(LogEvent::FighterJoined {
+            fight_id: 42,
+            name: "Distipy".to_string(),
+            entity_id: 11370102,
+            is_controlled_by_ai: false,
+        });
+        assert_eq!(
+            next_fight_events,
+            vec![
+                FightEvent::FightStarted { fight_id: 42 },
+                FightEvent::CombatantIdentified {
+                    fight_id: 42,
+                    name: "Distipy".to_string(),
+                    entity_id: 11370102,
+                    side: Side::Player,
+                },
+            ]
         );
     }
 }
