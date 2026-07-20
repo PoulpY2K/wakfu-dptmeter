@@ -124,6 +124,43 @@ impl FightTracker {
                 }
                 Vec::new()
             }
+            LogEvent::SpellCast { actor_name } => {
+                self.current_caster = self.resolve_owner_entity_id(&actor_name);
+                Vec::new()
+            }
+            LogEvent::HpChange {
+                name,
+                amount,
+                element,
+                ..
+            } => {
+                let (Some(fight_id), Some(caster_id)) = (self.fight_id, self.current_caster)
+                else {
+                    return Vec::new();
+                };
+                let Some(source) = self
+                    .participants
+                    .get(&caster_id)
+                    .map(|combatant| combatant.name.clone())
+                else {
+                    return Vec::new();
+                };
+
+                let kind = if amount < 0 {
+                    ActionKind::Damage
+                } else {
+                    ActionKind::Heal
+                };
+
+                vec![FightEvent::ActionRecorded {
+                    fight_id,
+                    source,
+                    target: name,
+                    amount,
+                    kind,
+                    element,
+                }]
+            }
             _ => Vec::new(),
         }
     }
@@ -210,5 +247,131 @@ mod tests {
             is_controlled_by_ai: true,
         });
         assert_eq!(summon_joined_events, Vec::new());
+    }
+
+    #[test]
+    fn spell_cast_then_hp_change_attributes_damage_to_the_caster() {
+        let mut tracker = FightTracker::new();
+        tracker.process(LogEvent::FightCreationDetected);
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Blampy".to_string(),
+            entity_id: 5547447,
+            is_controlled_by_ai: false,
+        });
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Soeur Zerker".to_string(),
+            entity_id: -1724034221200073,
+            is_controlled_by_ai: true,
+        });
+
+        let spell_cast_events = tracker.process(LogEvent::SpellCast {
+            actor_name: "Blampy".to_string(),
+        });
+        assert_eq!(spell_cast_events, Vec::new());
+
+        let hp_change_events = tracker.process(LogEvent::HpChange {
+            name: "Soeur Zerker".to_string(),
+            amount: -1500,
+            element: Some("Feu".to_string()),
+            is_parried: false,
+        });
+        assert_eq!(
+            hp_change_events,
+            vec![FightEvent::ActionRecorded {
+                fight_id: 1568151141,
+                source: "Blampy".to_string(),
+                target: "Soeur Zerker".to_string(),
+                amount: -1500,
+                kind: ActionKind::Damage,
+                element: Some("Feu".to_string()),
+            }]
+        );
+    }
+
+    #[test]
+    fn spell_cast_by_a_summon_attributes_damage_to_the_summons_owner() {
+        let mut tracker = FightTracker::new();
+        tracker.process(LogEvent::FightCreationDetected);
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Blampy".to_string(),
+            entity_id: 5547447,
+            is_controlled_by_ai: false,
+        });
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Soeur Zerker".to_string(),
+            entity_id: -1724034221200073,
+            is_controlled_by_ai: true,
+        });
+        tracker.process(LogEvent::SummonInvoked {
+            owner_name: "Blampy".to_string(),
+            summon_name: "Bombe Aveuglante".to_string(),
+        });
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Bombe Aveuglante".to_string(),
+            entity_id: -1724034220279884,
+            is_controlled_by_ai: true,
+        });
+
+        // Cas limite de la spec : une invocation qui lance elle-meme un sort
+        // doit attribuer les degats a son proprietaire, pas a l'invocation.
+        tracker.process(LogEvent::SpellCast {
+            actor_name: "Bombe Aveuglante".to_string(),
+        });
+
+        let hp_change_events = tracker.process(LogEvent::HpChange {
+            name: "Soeur Zerker".to_string(),
+            amount: -300,
+            element: None,
+            is_parried: false,
+        });
+        assert_eq!(
+            hp_change_events,
+            vec![FightEvent::ActionRecorded {
+                fight_id: 1568151141,
+                source: "Blampy".to_string(),
+                target: "Soeur Zerker".to_string(),
+                amount: -300,
+                kind: ActionKind::Damage,
+                element: None,
+            }]
+        );
+    }
+
+    #[test]
+    fn positive_hp_change_is_recorded_as_heal() {
+        let mut tracker = FightTracker::new();
+        tracker.process(LogEvent::FightCreationDetected);
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Marylpy".to_string(),
+            entity_id: 11370104,
+            is_controlled_by_ai: false,
+        });
+        tracker.process(LogEvent::SpellCast {
+            actor_name: "Marylpy".to_string(),
+        });
+
+        let hp_change_events = tracker.process(LogEvent::HpChange {
+            name: "Marylpy".to_string(),
+            amount: 400,
+            element: None,
+            is_parried: false,
+        });
+        assert_eq!(
+            hp_change_events,
+            vec![FightEvent::ActionRecorded {
+                fight_id: 1568151141,
+                source: "Marylpy".to_string(),
+                target: "Marylpy".to_string(),
+                amount: 400,
+                kind: ActionKind::Heal,
+                element: None,
+            }]
+        );
     }
 }
