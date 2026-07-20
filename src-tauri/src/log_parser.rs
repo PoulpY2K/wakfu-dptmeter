@@ -11,6 +11,10 @@ static FIGHTER_JOINED_RE: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
+static SUMMON_INVOKED_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r"\(combat\)\] (.+?): Invoque un\(e\) (.+?)\s*$").unwrap()
+});
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum LogEvent {
     FightCreationDetected,
@@ -19,6 +23,10 @@ pub enum LogEvent {
         name: String,
         entity_id: i64,
         is_controlled_by_ai: bool,
+    },
+    SummonInvoked {
+        owner_name: String,
+        summon_name: String,
     },
     Unrecognized,
 }
@@ -34,6 +42,13 @@ pub fn parse_line(line: &str) -> LogEvent {
             name: caps[2].to_string(),
             entity_id: caps[3].parse().expect("entity_id should be a valid i64"),
             is_controlled_by_ai: &caps[4] == "true",
+        };
+    }
+
+    if let Some(caps) = SUMMON_INVOKED_RE.captures(line) {
+        return LogEvent::SummonInvoked {
+            owner_name: caps[1].to_string(),
+            summon_name: caps[2].to_string(),
         };
     }
 
@@ -80,6 +95,19 @@ mod tests {
                 name: "Blampy".to_string(),
                 entity_id: 5547447,
                 is_controlled_by_ai: false,
+            }
+        );
+    }
+
+    #[test]
+    fn parses_summon_invoked_line() {
+        // Note: the real log line has a trailing space after the summon name.
+        let line = " INFO 12:50:43,661 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Invoque un(e) Bombe Aveuglante ";
+        assert_eq!(
+            parse_line(line),
+            LogEvent::SummonInvoked {
+                owner_name: "Blampy".to_string(),
+                summon_name: "Bombe Aveuglante".to_string(),
             }
         );
     }
