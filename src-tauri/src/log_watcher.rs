@@ -65,8 +65,11 @@ fn process_new_lines(
     };
 
     for line in lines {
-        let log_event = crate::log_parser::parse_line(&line);
-        if !matches!(log_event, crate::log_parser::LogEvent::Unrecognized) {
+        let log_event = crate::domain::log_parsing::parse_line(&line);
+        if !matches!(
+            log_event,
+            crate::domain::log_parsing::LogEvent::Unrecognized
+        ) {
             log::debug!("wakfu log parsed: {log_event:?}");
         }
         for fight_event in tracker.process(log_event) {

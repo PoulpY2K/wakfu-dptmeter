@@ -1,10 +1,8 @@
-mod model;
-
 use std::sync::LazyLock;
 
 use regex::Regex;
 
-pub use model::LogEvent;
+use super::model::LogEvent;
 
 static FIGHT_CREATION_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"CREATION DU COMBAT\s*$").unwrap());
