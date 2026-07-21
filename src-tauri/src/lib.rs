@@ -16,7 +16,13 @@ fn open_devtools_if_debug(app: &tauri::App) {
 
 fn start_log_watcher(app: &tauri::App) {
     let app_handle = app.handle().clone();
-    let log_path = log_watcher::wakfu_log_path();
+    let log_path = match log_watcher::wakfu_log_path() {
+        Ok(path) => path,
+        Err(err) => {
+            log::error!("failed to resolve the wakfu log file path: {err}");
+            return;
+        }
+    };
 
     log::info!("Watching wakfu log file at {}", log_path.display());
 
