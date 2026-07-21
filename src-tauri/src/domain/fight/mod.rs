@@ -1,5 +1,5 @@
 mod model;
 mod tracker;
 
-pub use model::{ActionKind, FightEvent, Side};
+pub use model::FightEvent;
 pub use tracker::FightTracker;
