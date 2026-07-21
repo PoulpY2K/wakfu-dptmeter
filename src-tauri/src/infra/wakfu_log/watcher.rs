@@ -1,15 +1,10 @@
-mod path;
-mod tailer;
-
 use std::path::Path;
 use std::time::Duration;
 
 use notify_debouncer_mini::notify::{self, PollWatcher, RecursiveMode};
 use notify_debouncer_mini::{Config, DebounceEventResult, Debouncer, new_debouncer_opt};
-use tauri::{AppHandle, Emitter};
 
-pub use path::wakfu_log_path;
-use tailer::LogTailer;
+use super::tailer::LogTailer;
 
 // Windows' native file-change notifications (ReadDirectoryChangesW) are
 // documented by notify itself as unreliable for files written by another
@@ -23,12 +18,11 @@ const DEBOUNCE_TIMEOUT: Duration = Duration::from_millis(100);
 // installs on machines where the player already has Wakfu running (and thus
 // already has a `wakfu.log`), so the file is assumed to exist by the time
 // this is called.
-pub fn watch_log_file(
-    app_handle: AppHandle,
+pub fn watch(
     log_path: &Path,
+    mut on_new_lines: impl FnMut(Vec<String>) + Send + 'static,
 ) -> notify::Result<Debouncer<PollWatcher>> {
     let mut tailer = LogTailer::new(log_path.to_path_buf());
-    let mut tracker = crate::domain::fight::FightTracker::new();
 
     let notify_config = notify::Config::default().with_poll_interval(POLL_INTERVAL);
     let config = Config::default()
@@ -41,7 +35,10 @@ pub fn watch_log_file(
                 log::error!("wakfu log watch error: {err:?}");
                 return;
             }
-            process_new_lines(&mut tailer, &mut tracker, &app_handle);
+            match tailer.read_new_lines() {
+                Ok(lines) => on_new_lines(lines),
+                Err(err) => log::error!("failed to read new wakfu log lines: {err}"),
+            }
         })?;
 
     debouncer
@@ -49,34 +46,4 @@ pub fn watch_log_file(
         .watch(log_path, RecursiveMode::NonRecursive)?;
 
     Ok(debouncer)
-}
-
-fn process_new_lines(
-    tailer: &mut LogTailer,
-    tracker: &mut crate::domain::fight::FightTracker,
-    app_handle: &AppHandle,
-) {
-    let lines = match tailer.read_new_lines() {
-        Ok(lines) => lines,
-        Err(err) => {
-            log::error!("failed to read new wakfu log lines: {err}");
-            return;
-        }
-    };
-
-    for line in lines {
-        let log_event = crate::domain::log_parsing::parse_line(&line);
-        if !matches!(
-            log_event,
-            crate::domain::log_parsing::LogEvent::Unrecognized
-        ) {
-            log::debug!("wakfu log parsed: {log_event:?}");
-        }
-        for fight_event in tracker.process(log_event) {
-            log::debug!("fight-event emitted: {fight_event:?}");
-            if let Err(err) = app_handle.emit("fight-event", &fight_event) {
-                log::error!("failed to emit fight-event: {err}");
-            }
-        }
-    }
 }
