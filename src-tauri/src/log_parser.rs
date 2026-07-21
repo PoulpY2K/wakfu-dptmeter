@@ -115,7 +115,7 @@ fn try_hp_change(line: &str) -> Option<LogEvent> {
         .captures_iter(&caps[3])
         .map(|tag_caps| tag_caps.get(1).unwrap().as_str())
         .collect();
-    let is_parried = tags.iter().any(|t| *t == "Parade !");
+    let is_parried = tags.contains(&"Parade !");
     let element = tags
         .iter()
         .find(|t| **t != "Parade !")
