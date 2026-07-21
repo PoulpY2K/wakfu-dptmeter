@@ -1,3 +1,7 @@
+//! Tauri backend for the Wakfu DPT-meter: tails the Wakfu client's log file,
+//! parses combat events, tracks per-fight damage/heal attribution, and
+//! forwards `fight-event` payloads to the webview frontend.
+
 mod fight_tracker;
 mod log_parser;
 mod log_watcher;
@@ -9,8 +13,10 @@ use tauri_plugin_log::{Target, TargetKind};
 fn open_devtools_if_debug(app: &tauri::App) {
     #[cfg(debug_assertions)]
     {
-        let window = app.get_webview_window("main").unwrap();
-        window.open_devtools();
+        match app.get_webview_window("main") {
+            Some(window) => window.open_devtools(),
+            None => log::warn!("main window not found; skipping devtools"),
+        }
     }
 }
 
@@ -26,7 +32,7 @@ fn start_log_watcher(app: &tauri::App) {
 
     log::info!("Watching wakfu log file at {}", log_path.display());
 
-    match log_watcher::watch_log_file(app_handle, log_path) {
+    match log_watcher::watch_log_file(app_handle, &log_path) {
         Ok(debouncer) => {
             // Intentionally leaked: the watcher must run for the whole app
             // process, and `Debouncer` stops watching as soon as it is dropped.
@@ -38,6 +44,11 @@ fn start_log_watcher(app: &tauri::App) {
     }
 }
 
+/// Boots the Tauri application: registers plugins, starts the wakfu log
+/// watcher, and blocks until the app window closes.
+///
+/// # Panics
+/// Panics if the underlying Tauri runtime fails to start.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -62,7 +73,7 @@ pub fn run() {
                         record.level(),
                         record.target(),
                         message
-                    ))
+                    ));
                 })
                 .build(),
         )

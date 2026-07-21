@@ -1,16 +1,35 @@
-use notify_debouncer_mini::notify::{self, PollWatcher, RecursiveMode};
-use notify_debouncer_mini::{Config, DebounceEventResult, Debouncer, new_debouncer_opt};
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::Duration;
+
+use notify_debouncer_mini::notify::{self, PollWatcher, RecursiveMode};
+use notify_debouncer_mini::{Config, DebounceEventResult, Debouncer, new_debouncer_opt};
 use tauri::{AppHandle, Emitter};
 
-pub fn wakfu_log_path() -> Result<PathBuf, String> {
+/// Failure modes when resolving the Wakfu client's log file path.
+///
+/// Each variant is only ever constructed on the platform it targets, hence
+/// the matching `#[cfg]` gates: keeping the enum shape aligned with
+/// [`wakfu_log_path`]'s own per-OS branches avoids dead-code warnings when
+/// a single-platform build only compiles one branch.
+#[derive(Debug, thiserror::Error)]
+pub enum LogPathError {
+    #[cfg(target_os = "windows")]
+    #[error("APPDATA environment variable is not set")]
+    AppDataNotSet,
+    #[cfg(target_os = "macos")]
+    #[error("HOME environment variable is not set")]
+    HomeNotSet,
+    #[cfg(not(any(target_os = "windows", target_os = "macos")))]
+    #[error("unsupported OS for wakfu log path")]
+    UnsupportedOs,
+}
+
+pub fn wakfu_log_path() -> Result<PathBuf, LogPathError> {
     #[cfg(target_os = "windows")]
     {
-        let appdata = std::env::var("APPDATA")
-            .map_err(|_| "APPDATA environment variable is not set".to_string())?;
+        let appdata = std::env::var("APPDATA").map_err(|_| LogPathError::AppDataNotSet)?;
         Ok(PathBuf::from(appdata)
             .join("zaap")
             .join("gamesLogs")
@@ -21,8 +40,7 @@ pub fn wakfu_log_path() -> Result<PathBuf, String> {
 
     #[cfg(target_os = "macos")]
     {
-        let home = std::env::var("HOME")
-            .map_err(|_| "HOME environment variable is not set".to_string())?;
+        let home = std::env::var("HOME").map_err(|_| LogPathError::HomeNotSet)?;
         Ok(PathBuf::from(home)
             .join("Library")
             .join("Logs")
@@ -34,7 +52,7 @@ pub fn wakfu_log_path() -> Result<PathBuf, String> {
 
     #[cfg(not(any(target_os = "windows", target_os = "macos")))]
     {
-        Err("unsupported OS for wakfu log path".to_string())
+        Err(LogPathError::UnsupportedOs)
     }
 }
 
@@ -48,16 +66,16 @@ const DEBOUNCE_TIMEOUT: Duration = Duration::from_millis(100);
 
 pub fn watch_log_file(
     app_handle: AppHandle,
-    log_path: PathBuf,
+    log_path: &Path,
 ) -> notify::Result<Debouncer<PollWatcher>> {
     if let Some(parent) = log_path.parent() {
         std::fs::create_dir_all(parent)?;
     }
     if !log_path.exists() {
-        File::create(&log_path)?;
+        File::create(log_path)?;
     }
 
-    let mut tailer = LogTailer::new(log_path.clone())?;
+    let mut tailer = LogTailer::new(log_path.to_path_buf());
     let mut tracker = crate::fight_tracker::FightTracker::new();
 
     let notify_config = notify::Config::default().with_poll_interval(POLL_INTERVAL);
@@ -76,7 +94,7 @@ pub fn watch_log_file(
 
     debouncer
         .watcher()
-        .watch(&log_path, RecursiveMode::NonRecursive)?;
+        .watch(log_path, RecursiveMode::NonRecursive)?;
 
     Ok(debouncer)
 }
@@ -114,11 +132,9 @@ pub struct LogTailer {
 }
 
 impl LogTailer {
-    pub fn new(path: PathBuf) -> std::io::Result<Self> {
-        let position = std::fs::metadata(&path)
-            .map(|metadata| metadata.len())
-            .unwrap_or(0);
-        Ok(Self { path, position })
+    pub fn new(path: PathBuf) -> Self {
+        let position = std::fs::metadata(&path).map_or(0, |metadata| metadata.len());
+        Self { path, position }
     }
 
     pub fn read_new_lines(&mut self) -> std::io::Result<Vec<String>> {
@@ -144,18 +160,20 @@ impl LogTailer {
 
         Ok(String::from_utf8_lossy(complete)
             .lines()
-            .map(|line| line.to_string())
+            .map(ToString::to_string)
             .collect())
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::fs::{self, OpenOptions};
     use std::io::Write;
     use std::path::PathBuf;
+    #[cfg(target_os = "macos")]
     use std::sync::{Mutex, OnceLock};
+
+    use super::*;
 
     fn temp_log_path(name: &str) -> PathBuf {
         let mut path = std::env::temp_dir();
@@ -218,7 +236,7 @@ mod tests {
         let path = temp_log_path("wakfu_tailer_test_existing_content.txt");
         fs::write(&path, "LIGNE 1\nLIGNE 2\n").unwrap();
 
-        let mut tailer = LogTailer::new(path.clone()).unwrap();
+        let mut tailer = LogTailer::new(path.clone());
         let lines = tailer.read_new_lines().unwrap();
 
         assert!(lines.is_empty());
@@ -230,7 +248,7 @@ mod tests {
         let path = temp_log_path("wakfu_tailer_test_appended_content.txt");
         fs::write(&path, "LIGNE 1\n").unwrap();
 
-        let mut tailer = LogTailer::new(path.clone()).unwrap();
+        let mut tailer = LogTailer::new(path.clone());
 
         let mut file = OpenOptions::new().append(true).open(&path).unwrap();
         writeln!(file, "CREATION DU COMBAT").unwrap();
@@ -251,7 +269,7 @@ mod tests {
         let path = temp_log_path("wakfu_tailer_test_partial_line.txt");
         fs::write(&path, "").unwrap();
 
-        let mut tailer = LogTailer::new(path.clone()).unwrap();
+        let mut tailer = LogTailer::new(path.clone());
 
         let mut file = OpenOptions::new().append(true).open(&path).unwrap();
         write!(file, "CREATION DU COMBAT\nLIGNE INCOMPLETE").unwrap();

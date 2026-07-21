@@ -1,5 +1,6 @@
-use regex::Regex;
 use std::sync::LazyLock;
+
+use regex::Regex;
 
 static FIGHT_CREATION_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"CREATION DU COMBAT\s*$").unwrap());
@@ -27,7 +28,7 @@ static HP_CHANGE_TAG_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\(([^)]
 static FIGHT_ENDED_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"\[FIGHT] End fight with id (\d+)").unwrap());
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum LogEvent {
     FightCreationDetected,
     FighterJoined {
@@ -119,7 +120,7 @@ fn try_hp_change(line: &str) -> Option<LogEvent> {
     let element = tags
         .iter()
         .find(|t| **t != "Parade !")
-        .map(|s| s.to_string());
+        .map(ToString::to_string);
 
     Some(LogEvent::HpChange {
         name: caps[1].to_string(),
@@ -137,6 +138,10 @@ fn try_fight_ended(line: &str) -> Option<LogEvent> {
 
 #[cfg(test)]
 mod tests {
+    // Fight/entity ids below are transcribed verbatim from real Wakfu log
+    // lines; adding digit separators would misrepresent the source data.
+    #![expect(clippy::unreadable_literal)]
+
     use super::*;
 
     #[test]
@@ -260,6 +265,9 @@ mod tests {
         );
     }
 
+    // `pm_line`/`pw_line`/`pa_line` mirror the PM/PW/PA log tags they assert
+    // against; renaming them apart would obscure that pairing.
+    #[expect(clippy::similar_names)]
     #[test]
     fn does_not_misfire_on_non_pv_status_lines() {
         let pm_line = " INFO 12:50:32,397 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: -2 PM max (Parti pris)";

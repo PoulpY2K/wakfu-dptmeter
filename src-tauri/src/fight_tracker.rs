@@ -1,14 +1,16 @@
-use crate::log_parser::LogEvent;
-use serde::Serialize;
 use std::collections::HashMap;
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
+use serde::Serialize;
+
+use crate::log_parser::LogEvent;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum Side {
     Player,
     Enemy,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum ActionKind {
     Damage,
     Heal,
@@ -104,50 +106,12 @@ impl FightTracker {
                 name,
                 entity_id,
                 is_controlled_by_ai,
-            } => {
-                let mut events = Vec::new();
-                if self.fight_id.is_none() {
-                    self.fight_id = Some(fight_id);
-                    events.push(FightEvent::FightStarted { fight_id });
-                }
-
-                let owner_entity_id = self.pending_summon_owners.remove(&name);
-                let side = if is_controlled_by_ai {
-                    Side::Enemy
-                } else {
-                    Side::Player
-                };
-                self.participants.insert(
-                    entity_id,
-                    Combatant {
-                        name: name.clone(),
-                        entity_id,
-                        side,
-                        owner_entity_id,
-                    },
-                );
-                self.entity_id_by_name.insert(name.clone(), entity_id);
-
-                if owner_entity_id.is_some() {
-                    return events;
-                }
-
-                events.push(FightEvent::CombatantIdentified {
-                    fight_id,
-                    name,
-                    entity_id,
-                    side,
-                });
-                events
-            }
+            } => self.handle_fighter_joined(fight_id, name, entity_id, is_controlled_by_ai),
             LogEvent::SummonInvoked {
                 owner_name,
                 summon_name,
             } => {
-                if let Some(owner_entity_id) = self.resolve_owner_entity_id(&owner_name) {
-                    self.pending_summon_owners
-                        .insert(summon_name, owner_entity_id);
-                }
+                self.handle_summon_invoked(&owner_name, summon_name);
                 Vec::new()
             }
             LogEvent::SpellCast {
@@ -155,13 +119,7 @@ impl FightTracker {
                 spell_name,
                 is_critical,
             } => {
-                self.current_cast =
-                    self.resolve_owner_entity_id(&actor_name)
-                        .map(|caster_entity_id| CurrentCast {
-                            caster_entity_id,
-                            spell_name,
-                            is_critical,
-                        });
+                self.handle_spell_cast(&actor_name, spell_name, is_critical);
                 Vec::new()
             }
             LogEvent::HpChange {
@@ -169,53 +127,124 @@ impl FightTracker {
                 amount,
                 element,
                 ..
-            } => {
-                let (Some(fight_id), Some(current_cast)) =
-                    (self.fight_id, self.current_cast.as_ref())
-                else {
-                    return Vec::new();
-                };
-                let Some(source) = self
-                    .participants
-                    .get(&current_cast.caster_entity_id)
-                    .map(|combatant| combatant.name.clone())
-                else {
-                    return Vec::new();
-                };
-
-                let kind = if amount < 0 {
-                    ActionKind::Damage
-                } else {
-                    ActionKind::Heal
-                };
-
-                vec![FightEvent::ActionRecorded {
-                    fight_id,
-                    source,
-                    target: name,
-                    amount,
-                    kind,
-                    element,
-                    spell_name: Some(current_cast.spell_name.clone()),
-                    is_critical: current_cast.is_critical,
-                }]
-            }
-            LogEvent::FightEnded { fight_id } => {
-                let resolved_fight_id = self.fight_id.unwrap_or(fight_id);
-                self.reset();
-                vec![FightEvent::FightEnded {
-                    fight_id: resolved_fight_id,
-                }]
-            }
+            } => self.handle_hp_change(name, amount, element),
+            LogEvent::FightEnded { fight_id } => self.handle_fight_ended(fight_id),
             LogEvent::Unrecognized => Vec::new(),
         }
+    }
+
+    fn handle_fighter_joined(
+        &mut self,
+        fight_id: u64,
+        name: String,
+        entity_id: i64,
+        is_controlled_by_ai: bool,
+    ) -> Vec<FightEvent> {
+        let mut events = Vec::new();
+        if self.fight_id.is_none() {
+            self.fight_id = Some(fight_id);
+            events.push(FightEvent::FightStarted { fight_id });
+        }
+
+        let owner_entity_id = self.pending_summon_owners.remove(&name);
+        let side = if is_controlled_by_ai {
+            Side::Enemy
+        } else {
+            Side::Player
+        };
+        self.participants.insert(
+            entity_id,
+            Combatant {
+                name: name.clone(),
+                entity_id,
+                side,
+                owner_entity_id,
+            },
+        );
+        self.entity_id_by_name.insert(name.clone(), entity_id);
+
+        if owner_entity_id.is_some() {
+            return events;
+        }
+
+        events.push(FightEvent::CombatantIdentified {
+            fight_id,
+            name,
+            entity_id,
+            side,
+        });
+        events
+    }
+
+    fn handle_summon_invoked(&mut self, owner_name: &str, summon_name: String) {
+        if let Some(owner_entity_id) = self.resolve_owner_entity_id(owner_name) {
+            self.pending_summon_owners
+                .insert(summon_name, owner_entity_id);
+        }
+    }
+
+    fn handle_spell_cast(&mut self, actor_name: &str, spell_name: String, is_critical: bool) {
+        self.current_cast = self
+            .resolve_owner_entity_id(actor_name)
+            .map(|caster_entity_id| CurrentCast {
+                caster_entity_id,
+                spell_name,
+                is_critical,
+            });
+    }
+
+    fn handle_hp_change(
+        &mut self,
+        name: String,
+        amount: i32,
+        element: Option<String>,
+    ) -> Vec<FightEvent> {
+        let (Some(fight_id), Some(current_cast)) = (self.fight_id, self.current_cast.as_ref())
+        else {
+            return Vec::new();
+        };
+        let Some(source) = self
+            .participants
+            .get(&current_cast.caster_entity_id)
+            .map(|combatant| combatant.name.clone())
+        else {
+            return Vec::new();
+        };
+
+        let kind = if amount < 0 {
+            ActionKind::Damage
+        } else {
+            ActionKind::Heal
+        };
+
+        vec![FightEvent::ActionRecorded {
+            fight_id,
+            source,
+            target: name,
+            amount,
+            kind,
+            element,
+            spell_name: Some(current_cast.spell_name.clone()),
+            is_critical: current_cast.is_critical,
+        }]
+    }
+
+    fn handle_fight_ended(&mut self, fight_id: u64) -> Vec<FightEvent> {
+        let resolved_fight_id = self.fight_id.unwrap_or(fight_id);
+        self.reset();
+        vec![FightEvent::FightEnded {
+            fight_id: resolved_fight_id,
+        }]
     }
 }
 
 #[cfg(test)]
 mod tests {
+    // Fight/entity ids below are transcribed verbatim from real Wakfu log
+    // lines; adding digit separators would misrepresent the source data.
+    #![expect(clippy::unreadable_literal)]
+
     use super::*;
-    use crate::log_parser::LogEvent;
 
     #[test]
     fn process_returns_no_events_for_unrecognized_line() {
