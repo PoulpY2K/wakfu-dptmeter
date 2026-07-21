@@ -1,62 +1,11 @@
+mod model;
+
 use std::collections::HashMap;
 
-use serde::Serialize;
+pub use model::{ActionKind, FightEvent, Side};
+use model::{Combatant, CurrentCast};
 
 use crate::log_parser::LogEvent;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
-pub enum Side {
-    Player,
-    Enemy,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
-pub enum ActionKind {
-    Damage,
-    Heal,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize)]
-pub enum FightEvent {
-    FightStarted {
-        fight_id: u64,
-    },
-    CombatantIdentified {
-        fight_id: u64,
-        name: String,
-        entity_id: i64,
-        side: Side,
-    },
-    ActionRecorded {
-        fight_id: u64,
-        source: String,
-        target: String,
-        amount: i32,
-        kind: ActionKind,
-        element: Option<String>,
-        spell_name: Option<String>,
-        is_critical: bool,
-    },
-    FightEnded {
-        fight_id: u64,
-    },
-}
-
-#[derive(Debug, Clone, PartialEq)]
-struct Combatant {
-    name: String,
-    entity_id: i64,
-    side: Side,
-    // Some(owner_entity_id) for summons, None for real fighters.
-    owner_entity_id: Option<i64>,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-struct CurrentCast {
-    caster_entity_id: i64,
-    spell_name: String,
-    is_critical: bool,
-}
 
 #[derive(Debug, Default)]
 pub struct FightTracker {
@@ -194,7 +143,7 @@ impl FightTracker {
     }
 
     fn handle_hp_change(
-        &mut self,
+        &self,
         name: String,
         amount: i32,
         element: Option<String>,

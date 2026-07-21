@@ -1,6 +1,10 @@
+mod model;
+
 use std::sync::LazyLock;
 
 use regex::Regex;
+
+pub use model::LogEvent;
 
 static FIGHT_CREATION_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"CREATION DU COMBAT\s*$").unwrap());
@@ -27,36 +31,6 @@ static HP_CHANGE_TAG_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\(([^)]
 
 static FIGHT_ENDED_RE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"\[FIGHT] End fight with id (\d+)").unwrap());
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum LogEvent {
-    FightCreationDetected,
-    FighterJoined {
-        fight_id: u64,
-        name: String,
-        entity_id: i64,
-        is_controlled_by_ai: bool,
-    },
-    SummonInvoked {
-        owner_name: String,
-        summon_name: String,
-    },
-    SpellCast {
-        actor_name: String,
-        spell_name: String,
-        is_critical: bool,
-    },
-    HpChange {
-        name: String,
-        amount: i32,
-        element: Option<String>,
-        is_parried: bool,
-    },
-    FightEnded {
-        fight_id: u64,
-    },
-    Unrecognized,
-}
 
 pub fn parse_line(line: &str) -> LogEvent {
     try_fight_creation(line)

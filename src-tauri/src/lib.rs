@@ -34,9 +34,7 @@ fn start_log_watcher(app: &tauri::App) {
 
     match log_watcher::watch_log_file(app_handle, &log_path) {
         Ok(debouncer) => {
-            // Intentionally leaked: the watcher must run for the whole app
-            // process, and `Debouncer` stops watching as soon as it is dropped.
-            std::mem::forget(debouncer);
+            app.manage(debouncer);
         }
         Err(err) => {
             log::error!("failed to start watching the wakfu log file: {err}");
