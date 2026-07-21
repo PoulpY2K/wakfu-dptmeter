@@ -1,10 +1,6 @@
-mod model;
-
 use std::collections::HashMap;
 
-pub use model::{ActionKind, FightEvent, Side};
-use model::{Combatant, CurrentCast};
-
+use super::model::{ActionKind, Combatant, CurrentCast, FightEvent, Side};
 use crate::domain::log_parsing::LogEvent;
 
 #[derive(Debug, Default)]

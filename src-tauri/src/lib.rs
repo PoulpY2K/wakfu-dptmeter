@@ -3,7 +3,6 @@
 //! forwards `fight-event` payloads to the webview frontend.
 
 mod domain;
-mod fight_tracker;
 mod log_watcher;
 
 use tauri::Manager;

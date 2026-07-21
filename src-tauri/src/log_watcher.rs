@@ -28,7 +28,7 @@ pub fn watch_log_file(
     log_path: &Path,
 ) -> notify::Result<Debouncer<PollWatcher>> {
     let mut tailer = LogTailer::new(log_path.to_path_buf());
-    let mut tracker = crate::fight_tracker::FightTracker::new();
+    let mut tracker = crate::domain::fight::FightTracker::new();
 
     let notify_config = notify::Config::default().with_poll_interval(POLL_INTERVAL);
     let config = Config::default()
@@ -53,7 +53,7 @@ pub fn watch_log_file(
 
 fn process_new_lines(
     tailer: &mut LogTailer,
-    tracker: &mut crate::fight_tracker::FightTracker,
+    tracker: &mut crate::domain::fight::FightTracker,
     app_handle: &AppHandle,
 ) {
     let lines = match tailer.read_new_lines() {
