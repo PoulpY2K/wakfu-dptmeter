@@ -45,6 +45,8 @@ struct Combatant {
     name: String,
     entity_id: i64,
     side: Side,
+    // Some(owner_entity_id) for summons, None for real fighters.
+    owner_entity_id: Option<i64>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -58,7 +60,17 @@ struct CurrentCast {
 pub struct FightTracker {
     fight_id: Option<u64>,
     participants: HashMap<i64, Combatant>,
-    summon_owner: HashMap<String, i64>,
+    // Most recently joined/invoked entity for a given display name. The
+    // Wakfu log only ever refers to actors by name in spell-cast and PV
+    // lines (never by entity id), so when two owners have a same-named
+    // summon alive at once, the log itself gives no way to tell which
+    // instance a later line refers to. Resolving to the most recently
+    // invoked entity mirrors the one thing we do know for certain: at the
+    // moment of invocation, a summon belongs to whoever just invoked it.
+    entity_id_by_name: HashMap<String, i64>,
+    // Owner entity id staged by SummonInvoked, consumed by the FighterJoined
+    // that immediately follows it for the same summon name.
+    pending_summon_owners: HashMap<String, i64>,
     current_cast: Option<CurrentCast>,
 }
 
@@ -70,19 +82,15 @@ impl FightTracker {
     fn reset(&mut self) {
         self.fight_id = None;
         self.participants.clear();
-        self.summon_owner.clear();
+        self.entity_id_by_name.clear();
+        self.pending_summon_owners.clear();
         self.current_cast = None;
     }
 
     fn resolve_owner_entity_id(&self, name: &str) -> Option<i64> {
-        if let Some(&owner_id) = self.summon_owner.get(name) {
-            Some(owner_id)
-        } else {
-            self.participants
-                .values()
-                .find(|combatant| combatant.name == name)
-                .map(|combatant| combatant.entity_id)
-        }
+        let entity_id = *self.entity_id_by_name.get(name)?;
+        let combatant = self.participants.get(&entity_id)?;
+        Some(combatant.owner_entity_id.unwrap_or(combatant.entity_id))
     }
 
     pub fn process(&mut self, event: LogEvent) -> Vec<FightEvent> {
@@ -103,10 +111,7 @@ impl FightTracker {
                     events.push(FightEvent::FightStarted { fight_id });
                 }
 
-                if self.summon_owner.contains_key(&name) {
-                    return events;
-                }
-
+                let owner_entity_id = self.pending_summon_owners.remove(&name);
                 let side = if is_controlled_by_ai {
                     Side::Enemy
                 } else {
@@ -118,8 +123,15 @@ impl FightTracker {
                         name: name.clone(),
                         entity_id,
                         side,
+                        owner_entity_id,
                     },
                 );
+                self.entity_id_by_name.insert(name.clone(), entity_id);
+
+                if owner_entity_id.is_some() {
+                    return events;
+                }
+
                 events.push(FightEvent::CombatantIdentified {
                     fight_id,
                     name,
@@ -133,7 +145,8 @@ impl FightTracker {
                 summon_name,
             } => {
                 if let Some(owner_entity_id) = self.resolve_owner_entity_id(&owner_name) {
-                    self.summon_owner.insert(summon_name, owner_entity_id);
+                    self.pending_summon_owners
+                        .insert(summon_name, owner_entity_id);
                 }
                 Vec::new()
             }
@@ -227,7 +240,9 @@ mod tests {
         assert_eq!(
             enemy_events,
             vec![
-                FightEvent::FightStarted { fight_id: 1568151141 },
+                FightEvent::FightStarted {
+                    fight_id: 1568151141
+                },
                 FightEvent::CombatantIdentified {
                     fight_id: 1568151141,
                     name: "Soeur Zerker".to_string(),
@@ -380,6 +395,105 @@ mod tests {
                 spell_name: Some("Explosion".to_string()),
                 is_critical: false,
             }]
+        );
+    }
+
+    #[test]
+    fn two_owners_with_same_named_summons_attribute_casts_to_the_most_recently_invoked_owner() {
+        let mut tracker = FightTracker::new();
+        tracker.process(LogEvent::FightCreationDetected);
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Blampy".to_string(),
+            entity_id: 5547447,
+            is_controlled_by_ai: false,
+        });
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Distipy".to_string(),
+            entity_id: 11370102,
+            is_controlled_by_ai: false,
+        });
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Soeur Zerker".to_string(),
+            entity_id: -1724034221200073,
+            is_controlled_by_ai: true,
+        });
+
+        // Blampy invokes a bomb first; while it is the only one alive its
+        // casts are correctly attributed to Blampy.
+        tracker.process(LogEvent::SummonInvoked {
+            owner_name: "Blampy".to_string(),
+            summon_name: "Bombe Aveuglante".to_string(),
+        });
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Bombe Aveuglante".to_string(),
+            entity_id: -1,
+            is_controlled_by_ai: true,
+        });
+        tracker.process(LogEvent::SpellCast {
+            actor_name: "Bombe Aveuglante".to_string(),
+            spell_name: "Explosion".to_string(),
+            is_critical: false,
+        });
+        let blampy_bomb_events = tracker.process(LogEvent::HpChange {
+            name: "Soeur Zerker".to_string(),
+            amount: -100,
+            element: None,
+            is_parried: false,
+        });
+        assert_eq!(
+            blampy_bomb_events[0].clone(),
+            FightEvent::ActionRecorded {
+                fight_id: 1568151141,
+                source: "Blampy".to_string(),
+                target: "Soeur Zerker".to_string(),
+                amount: -100,
+                kind: ActionKind::Damage,
+                element: None,
+                spell_name: Some("Explosion".to_string()),
+                is_critical: false,
+            }
+        );
+
+        // Distipy then invokes a same-named bomb. Once both are alive, the
+        // log gives no way to tell them apart by name alone: casts for that
+        // name now resolve to whoever invoked most recently.
+        tracker.process(LogEvent::SummonInvoked {
+            owner_name: "Distipy".to_string(),
+            summon_name: "Bombe Aveuglante".to_string(),
+        });
+        tracker.process(LogEvent::FighterJoined {
+            fight_id: 1568151141,
+            name: "Bombe Aveuglante".to_string(),
+            entity_id: -2,
+            is_controlled_by_ai: true,
+        });
+        tracker.process(LogEvent::SpellCast {
+            actor_name: "Bombe Aveuglante".to_string(),
+            spell_name: "Explosion".to_string(),
+            is_critical: false,
+        });
+        let distipy_bomb_events = tracker.process(LogEvent::HpChange {
+            name: "Soeur Zerker".to_string(),
+            amount: -200,
+            element: None,
+            is_parried: false,
+        });
+        assert_eq!(
+            distipy_bomb_events[0].clone(),
+            FightEvent::ActionRecorded {
+                fight_id: 1568151141,
+                source: "Distipy".to_string(),
+                target: "Soeur Zerker".to_string(),
+                amount: -200,
+                kind: ActionKind::Damage,
+                element: None,
+                spell_name: Some("Explosion".to_string()),
+                is_critical: false,
+            }
         );
     }
 

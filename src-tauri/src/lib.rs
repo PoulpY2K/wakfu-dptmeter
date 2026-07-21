@@ -1,5 +1,5 @@
-mod log_parser;
 mod fight_tracker;
+mod log_parser;
 mod log_watcher;
 
 use tauri::Manager;
@@ -49,7 +49,11 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_log::Builder::new()
-                .level(log::LevelFilter::Debug)
+                .level(if cfg!(debug_assertions) {
+                    log::LevelFilter::Debug
+                } else {
+                    log::LevelFilter::Info
+                })
                 .target(Target::new(TargetKind::Webview))
                 .format(|out, message, record| {
                     out.finish(format_args!(

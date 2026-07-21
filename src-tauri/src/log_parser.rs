@@ -11,9 +11,8 @@ static FIGHTER_JOINED_RE: LazyLock<Regex> = LazyLock::new(|| {
     .unwrap()
 });
 
-static SUMMON_INVOKED_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"\(combat\)] (.+?): Invoque un\(e\) (.+?)\s*$").unwrap()
-});
+static SUMMON_INVOKED_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"\(combat\)] (.+?): Invoque un\(e\) (.+?)\s*$").unwrap());
 
 static SPELL_CAST_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"\(combat\)] (.+?) lance le sort (.+?)(\s+\(Critiques\))?\s*$").unwrap()
@@ -274,7 +273,8 @@ mod tests {
 
     #[test]
     fn parses_fight_ended_line() {
-        let line = " INFO 12:50:50,028 [AWT-EventQueue-0] (aWF:91) - [FIGHT] End fight with id 1568151141";
+        let line =
+            " INFO 12:50:50,028 [AWT-EventQueue-0] (aWF:91) - [FIGHT] End fight with id 1568151141";
         assert_eq!(
             parse_line(line),
             LogEvent::FightEnded {
@@ -286,8 +286,7 @@ mod tests {
     #[test]
     fn ignores_documented_noise_lines_as_unrecognized() {
         // Cas limites de la spec : ces lignes ne doivent jamais produire d'evenement.
-        let not_found_line =
-            " WARN 12:50:14,498 [AWT-EventQueue-0] (cky:29) - The fight with the id 1568151141 has not been found";
+        let not_found_line = " WARN 12:50:14,498 [AWT-EventQueue-0] (cky:29) - The fight with the id 1568151141 has not been found";
         let join_procedure_line =
             " INFO 12:50:22,848 [AWT-EventQueue-0] (cko:37) - Starting join procedure for 11049475";
 

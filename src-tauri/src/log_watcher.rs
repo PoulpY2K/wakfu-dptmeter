@@ -1,15 +1,16 @@
+use notify_debouncer_mini::notify::{self, PollWatcher, RecursiveMode};
+use notify_debouncer_mini::{Config, DebounceEventResult, Debouncer, new_debouncer_opt};
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
 use std::path::PathBuf;
 use std::time::Duration;
-use notify_debouncer_mini::notify::{self, PollWatcher, RecursiveMode};
-use notify_debouncer_mini::{new_debouncer_opt, Config, DebounceEventResult, Debouncer};
 use tauri::{AppHandle, Emitter};
 
 pub fn wakfu_log_path() -> Result<PathBuf, String> {
     #[cfg(target_os = "windows")]
     {
-        let appdata = std::env::var("APPDATA").map_err(|_| "APPDATA environment variable is not set".to_string())?;
+        let appdata = std::env::var("APPDATA")
+            .map_err(|_| "APPDATA environment variable is not set".to_string())?;
         Ok(PathBuf::from(appdata)
             .join("zaap")
             .join("gamesLogs")
@@ -20,7 +21,8 @@ pub fn wakfu_log_path() -> Result<PathBuf, String> {
 
     #[cfg(target_os = "macos")]
     {
-        let home = std::env::var("HOME").map_err(|_| "HOME environment variable is not set".to_string())?;
+        let home = std::env::var("HOME")
+            .map_err(|_| "HOME environment variable is not set".to_string())?;
         Ok(PathBuf::from(home)
             .join("Library")
             .join("Logs")
@@ -95,10 +97,10 @@ fn process_new_lines(
     for line in lines {
         let log_event = crate::log_parser::parse_line(&line);
         if !matches!(log_event, crate::log_parser::LogEvent::Unrecognized) {
-            log::info!("wakfu log parsed: {log_event:?}");
+            log::debug!("wakfu log parsed: {log_event:?}");
         }
         for fight_event in tracker.process(log_event) {
-            log::info!("fight-event emitted: {fight_event:?}");
+            log::debug!("fight-event emitted: {fight_event:?}");
             if let Err(err) = app_handle.emit("fight-event", &fight_event) {
                 log::error!("failed to emit fight-event: {err}");
             }
@@ -121,6 +123,10 @@ impl LogTailer {
 
     pub fn read_new_lines(&mut self) -> std::io::Result<Vec<String>> {
         let mut file = File::open(&self.path)?;
+        let len = file.metadata()?.len();
+        if len < self.position {
+            self.position = len;
+        }
         file.seek(SeekFrom::Start(self.position))?;
 
         let mut buf = Vec::new();
