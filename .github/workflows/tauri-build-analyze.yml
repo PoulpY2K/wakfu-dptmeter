@@ -108,5 +108,5 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dcommunity.rust.lcov.reportPaths=reports/lcov-output.info
+            -Dsonar.rust.lcov.reportPaths=reports/lcov-output.info
             -Dsonar.rust.clippyReport.reportPaths=reports/clippy-output.json
