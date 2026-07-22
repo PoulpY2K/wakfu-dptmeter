@@ -27,6 +27,13 @@ pub enum FightEvent {
         entity_id: i64,
         side: Side,
     },
+    TurnStarted {
+        fight_id: u64,
+        name: String,
+        entity_id: i64,
+        side: Side,
+        turn_number: u32,
+    },
     ActionRecorded {
         fight_id: u64,
         source: String,
@@ -36,6 +43,7 @@ pub enum FightEvent {
         element: Option<String>,
         spell_name: Option<String>,
         is_critical: bool,
+        turn_number: u32,
     },
     FightEnded {
         fight_id: u64,

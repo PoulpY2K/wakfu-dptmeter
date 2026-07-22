@@ -1,7 +1,7 @@
 [package]
 name = "wakfu-dptmeter"
-version = "0.0.1"
-description = "Un compteur de dégats par tour pour le jeu Wakfu"
+version = "0.0.2"
+description = "A turn-based damage counter for the video game Wakfu"
 authors = ["poulpy2k"]
 edition = "2024"
 
