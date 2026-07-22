@@ -19,7 +19,7 @@ impl LogTailer {
         let mut file = File::open(&self.path)?;
         let len = file.metadata()?.len();
         if len < self.position {
-            self.position = len;
+            self.position = 0;
         }
         file.seek(SeekFrom::Start(self.position))?;
 
@@ -108,6 +108,23 @@ mod tests {
 
         let lines = tailer.read_new_lines().unwrap();
         assert_eq!(lines, vec!["LIGNE INCOMPLETE - suite".to_string()]);
+
+        let _ = fs::remove_file(&path);
+    }
+
+    #[test]
+    fn rereads_from_the_start_after_truncation_or_rotation() {
+        let path = temp_log_path("wakfu_tailer_test_truncation.txt");
+        fs::write(&path, "LIGNE 1\nLIGNE 2\n").unwrap();
+
+        let mut tailer = LogTailer::new(path.clone());
+        tailer.read_new_lines().unwrap();
+
+        // Simulate a new Wakfu session starting a fresh, shorter log file.
+        fs::write(&path, "NOUVELLE LIGNE\n").unwrap();
+
+        let lines = tailer.read_new_lines().unwrap();
+        assert_eq!(lines, vec!["NOUVELLE LIGNE".to_string()]);
 
         let _ = fs::remove_file(&path);
     }
