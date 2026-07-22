@@ -1,4 +1,4 @@
-name: Docker Publish and Deploy
+name: "Build and release"
 
 on:
   workflow_run:
@@ -48,7 +48,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: wakfu-dptmeter-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
           releaseName: "Wakfu DPTMeter v__VERSION__"
           releaseBody: "See the assets to download this version and install."
           releaseDraft: true
