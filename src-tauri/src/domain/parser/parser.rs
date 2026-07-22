@@ -1,5 +1,5 @@
 use super::model::LogEvent;
-use super::patterns::{
+use super::constant::{
     FIGHT_CREATION_RE, FIGHT_ENDED_RE, FIGHTER_JOINED_RE, HP_CHANGE_RE, HP_CHANGE_TAG_RE,
     SPELL_CAST_RE, SUMMON_INVOKED_RE,
 };

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use super::model::{ActionKind, Combatant, CurrentCast, FightEvent, Side};
-use crate::domain::log_parsing::LogEvent;
+use crate::domain::parser::LogEvent;
 
 #[derive(Debug, Default)]
 pub struct FightTracker {
@@ -563,7 +563,7 @@ mod tests {
         let mut tracker = FightTracker::new();
         let mut events = Vec::new();
         for line in content.lines() {
-            let log_event = crate::domain::log_parsing::parse_line(line);
+            let log_event = crate::domain::parser::parse_line(line);
             events.extend(tracker.process(log_event));
         }
 

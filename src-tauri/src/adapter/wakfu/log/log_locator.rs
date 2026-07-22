@@ -4,7 +4,7 @@ use std::path::PathBuf;
 ///
 /// Each variant is only ever constructed on the platform it targets, hence
 /// the matching `#[cfg]` gates: keeping the enum shape aligned with
-/// [`wakfu_log_path`]'s own per-OS branches avoids dead-code warnings when
+/// [`get_path`]'s own per-OS branches avoids dead-code warnings when
 /// a single-platform build only compiles one branch.
 #[derive(Debug, thiserror::Error)]
 pub enum LogPathError {
@@ -19,7 +19,7 @@ pub enum LogPathError {
     UnsupportedOs,
 }
 
-pub fn wakfu_log_path() -> Result<PathBuf, LogPathError> {
+pub fn get_path() -> Result<PathBuf, LogPathError> {
     #[cfg(target_os = "windows")]
     {
         let appdata = std::env::var("APPDATA").map_err(|_| LogPathError::AppDataNotSet)?;
@@ -71,7 +71,7 @@ mod tests {
             std::env::set_var("HOME", "/tmp/wakfu_dptmeter_fake_home");
         }
 
-        let path = wakfu_log_path().unwrap();
+        let path = get_path().unwrap();
 
         unsafe {
             match &previous {
@@ -94,7 +94,7 @@ mod tests {
             std::env::remove_var("HOME");
         }
 
-        let result = wakfu_log_path();
+        let result = get_path();
 
         unsafe {
             if let Some(value) = &previous {

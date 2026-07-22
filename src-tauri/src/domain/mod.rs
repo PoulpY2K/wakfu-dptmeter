@@ -1,2 +1,2 @@
 pub mod fight;
-pub mod log_parsing;
+pub mod parser;

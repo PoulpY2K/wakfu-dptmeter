@@ -72,19 +72,6 @@ jobs:
             src-tauri/lcov-output.info
           retention-days: 1
 
-      - uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tagName: wakfu-dptmeter-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-          releaseName: "Wakfu DPTMeter v__VERSION__"
-          releaseBody: "See the assets to download this version and install."
-          releaseDraft: true
-          generateReleaseNotes: true
-          prerelease: false
-          uploadWorkflowArtifacts: true
-          args: ${{ matrix.args }}
-
 
   sonarqube:
     runs-on: windows-latest

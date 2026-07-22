@@ -3,8 +3,8 @@
 //! forwards `fight-event` payloads to the webview frontend.
 
 mod domain;
-mod infra;
-mod pipeline;
+mod adapter;
+mod application;
 
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
@@ -22,7 +22,7 @@ fn open_devtools_if_debug(app: &tauri::App) {
 
 fn start_log_watcher(app: &tauri::App) {
     let app_handle = app.handle().clone();
-    let log_path = match infra::wakfu_log::wakfu_log_path() {
+    let log_path = match adapter::wakfu::log::get_path() {
         Ok(path) => path,
         Err(err) => {
             log::error!("failed to resolve the wakfu log file path: {err}");
@@ -32,7 +32,7 @@ fn start_log_watcher(app: &tauri::App) {
 
     log::info!("Watching wakfu log file at {}", log_path.display());
 
-    match pipeline::start_watching(app_handle, &log_path) {
+    match application::start_watching(app_handle, &log_path) {
         Ok(debouncer) => {
             app.manage(debouncer);
         }
@@ -44,9 +44,6 @@ fn start_log_watcher(app: &tauri::App) {
 
 /// Boots the Tauri application: registers plugins, starts the wakfu log
 /// watcher, and blocks until the app window closes.
-///
-/// # Panics
-/// Panics if the underlying Tauri runtime fails to start.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
