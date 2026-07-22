@@ -11,13 +11,22 @@ pub(super) struct LogTailer {
 
 impl LogTailer {
     pub(super) fn new(path: PathBuf) -> Self {
-        let position = std::fs::metadata(&path).map_or(0, |metadata| metadata.len());
+        // If the file doesn't exist yet, defer initialization: the first
+        // successful read will sync the cursor to the end so we don't replay pre-existing content.
+        let position = std::fs::metadata(&path).map_or(u64::MAX, |metadata| metadata.len());
         Self { path, position }
     }
 
     pub(super) fn read_new_lines(&mut self) -> std::io::Result<Vec<String>> {
         let mut file = File::open(&self.path)?;
         let len = file.metadata()?.len();
+
+        // If launched before the file existed, start tailing from the current end (skip existing content).
+        if self.position == u64::MAX {
+            self.position = len;
+            return Ok(Vec::new());
+        }
+
         if len < self.position {
             self.position = 0;
         }

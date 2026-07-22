@@ -1,5 +1,5 @@
 use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, Weak};
 use std::thread;
 use std::time::Duration;
 
@@ -44,19 +44,27 @@ pub fn watch(
         })?;
 
     let debouncer = Arc::new(Mutex::new(debouncer));
-    spawn_watch_when_ready(log_path.to_path_buf(), Arc::clone(&debouncer));
+    spawn_watch_when_ready(log_path.to_path_buf(), Arc::downgrade(&debouncer));
 
     Ok(debouncer)
 }
 
 // Waits (polling on `POLL_INTERVAL`) for `log_path` to exist, then registers
 // the actual notify watch. Runs on its own thread so a missing log file
-// never blocks app startup.
-fn spawn_watch_when_ready(log_path: PathBuf, debouncer: Arc<Mutex<Debouncer<PollWatcher>>>) {
+// never blocks app startup. Holds only a `Weak` ref so the thread can't keep
+// the debouncer (and the app) alive forever if `log_path` never shows up.
+fn spawn_watch_when_ready(log_path: PathBuf, debouncer: Weak<Mutex<Debouncer<PollWatcher>>>) {
     thread::spawn(move || {
         while !log_path.exists() {
+            if debouncer.upgrade().is_none() {
+                return;
+            }
             thread::sleep(POLL_INTERVAL);
         }
+
+        let Some(debouncer) = debouncer.upgrade() else {
+            return;
+        };
 
         let mut guard = match debouncer.lock() {
             Ok(guard) => guard,
@@ -65,6 +73,7 @@ fn spawn_watch_when_ready(log_path: PathBuf, debouncer: Arc<Mutex<Debouncer<Poll
                 return;
             }
         };
+
         if let Err(err) = guard.watcher().watch(&log_path, RecursiveMode::NonRecursive) {
             log::error!("failed to start watching wakfu log file: {err:?}");
         }
