@@ -5,7 +5,7 @@
 <a href="https://github.com/PoulpY2K/wakfu-dptmeter"><h1 style="text-align:center">Wakfu DPT Meter</h1></a>
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
-![Build status](https://img.shields.io/github/actions/workflow/status/PoulpY2K/wakfu-dptmeter/tauri.yml)
+![Build status](https://img.shields.io/github/actions/workflow/status/PoulpY2K/wakfu-dptmeter/tauri-build-analyze.yml)
 ![Gate](https://img.shields.io/sonar/quality_gate/PoulpY2K_wakfu-dptmeter?server=https%3A%2F%2Fsonarcloud.io
 )
 ![Coverage](https://img.shields.io/sonar/coverage/PoulpY2K_wakfu-dptmeter?server=https%3A%2F%2Fsonarcloud.io
@@ -19,7 +19,7 @@
 
 
 <p style="text-align:center">DPT Meter est un outil pour <a href="https://www.wakfu.com/fr/mmorpg">Wakfu</a>, jeu développé et détenu par Ankama Games. 
-Le but de l'outil est d'afficher le nombre de dégats par tour fait par les personnages au fur et à mesure de chaque combat, tout en apportant des statistiques et une interface moderne.</p></div>
+Le but de l'outil est d'afficher le nombre de dégâts par tour fait par les personnages au fur et à mesure de chaque combat, tout en apportant des statistiques et une interface moderne.</p></div>
 
 ## 📄 À propos du projet
 
@@ -27,7 +27,7 @@ L'outil a uniquement accès au fichier de log principal du jeu Wakfu. On ne fait
 insérées, absolument aucune écriture.
 
 - `%APPDATA%\zaap\gamesLogs\wakfu\logs\wakfu.log` (Windows)
-- `~\Library\Logs\zaap\wakfu\logs\wakfu.log` (MacOS)
+- `~/Library/Logs/zaap/wakfu/logs/wakfu.log` (MacOS)
 
 ## 🧠 Propriété intellectuelle
 
