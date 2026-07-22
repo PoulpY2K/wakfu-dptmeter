@@ -1,6 +1,6 @@
 mod model;
-mod parser;
+mod line_parser;
 mod constant;
 
 pub use model::LogEvent;
-pub use parser::parse_line;
+pub use line_parser::parse_line;

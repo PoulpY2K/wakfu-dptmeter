@@ -44,6 +44,10 @@ fn start_log_watcher(app: &tauri::App) {
 
 /// Boots the Tauri application: registers plugins, starts the wakfu log
 /// watcher, and blocks until the app window closes.
+///
+/// # Panics
+/// Rust panics if the Tauri event loop fails to start (e.g. window/platform init
+/// failure) — `Builder::run` returns `Err` and the trailing `.expect` aborts.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
