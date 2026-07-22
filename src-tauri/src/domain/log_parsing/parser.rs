@@ -1,34 +1,8 @@
-use std::sync::LazyLock;
-
-use regex::Regex;
-
 use super::model::LogEvent;
-
-static FIGHT_CREATION_RE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"CREATION DU COMBAT\s*$").unwrap());
-
-static FIGHTER_JOINED_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(
-        r"\[_FL_] fightId=(\d+) (.+?) breed : \d+ \[(-?\d+)] isControlledByAI=(true|false) obstacleId : -?\d+ join the fight at \{Point3 : \([^)]*\)}",
-    )
-    .unwrap()
-});
-
-static SUMMON_INVOKED_RE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"\(combat\)] (.+?): Invoque un\(e\) (.+?)\s*$").unwrap());
-
-static SPELL_CAST_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"\(combat\)] (.+?) lance le sort (.+?)(\s+\(Critiques\))?\s*$").unwrap()
-});
-
-static HP_CHANGE_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"\(combat\)] (.+?): ([+-]?[\d\s]+?) PV((?:\s+\([^)]+\))*)\s*$").unwrap()
-});
-
-static HP_CHANGE_TAG_RE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\(([^)]+)\)").unwrap());
-
-static FIGHT_ENDED_RE: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r"\[FIGHT] End fight with id (\d+)").unwrap());
+use super::patterns::{
+    FIGHT_CREATION_RE, FIGHT_ENDED_RE, FIGHTER_JOINED_RE, HP_CHANGE_RE, HP_CHANGE_TAG_RE,
+    SPELL_CAST_RE, SUMMON_INVOKED_RE,
+};
 
 pub fn parse_line(line: &str) -> LogEvent {
     try_fight_creation(line)
