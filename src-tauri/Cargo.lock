@@ -4245,12 +4245,13 @@ dependencies = [
 
 [[package]]
 name = "wakfu-dptmeter"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "chrono",
  "log",
  "notify 9.0.0-rc.4",
  "notify-debouncer-mini",
+ "regex",
  "serde",
  "serde_json",
  "tauri",
@@ -4258,6 +4259,7 @@ dependencies = [
  "tauri-plugin-log",
  "tauri-plugin-opener",
  "tauri-plugin-single-instance",
+ "thiserror 2.0.19",
 ]
 
 [[package]]

@@ -1,6 +1,6 @@
 [package]
 name = "wakfu-dptmeter"
-version = "0.1.0"
+version = "0.0.1"
 description = "Un compteur de dégats par tour pour le jeu Wakfu"
 authors = ["poulpy2k"]
 edition = "2024"
@@ -27,6 +27,8 @@ notify-debouncer-mini = "0.7.0"
 log = "0.4.33"
 tauri-plugin-log = "2.9.0"
 chrono = "0.4.45"
+regex = "1.13.1"
+thiserror = "2.0"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-single-instance = "2"
@@ -40,3 +42,11 @@ lto = true # Enables link-time-optimizations.
 opt-level = "s" # Prioritizes small binary size. Use `3` if you prefer speed.
 panic = "abort" # Higher performance by disabling panic handlers.
 strip = true # Ensures debug symbols are removed.
+
+[lints.rust]
+future-incompatible = { level = "warn", priority = -1 }
+nonstandard_style = { level = "deny", priority = -2 }
+
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "warn", priority = -1 }

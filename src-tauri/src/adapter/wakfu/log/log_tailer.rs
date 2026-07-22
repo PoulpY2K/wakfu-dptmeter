@@ -1,0 +1,140 @@
+use std::fs::File;
+use std::io::{Read, Seek, SeekFrom};
+use std::path::PathBuf;
+
+/// Tracks a byte offset into a growing log file and yields only the lines
+/// appended since the last read.
+pub(super) struct LogTailer {
+    path: PathBuf,
+    position: u64,
+}
+
+impl LogTailer {
+    pub(super) fn new(path: PathBuf) -> Self {
+        // If the file doesn't exist yet, defer initialization: the first
+        // successful read will sync the cursor to the end so we don't replay pre-existing content.
+        let position = std::fs::metadata(&path).map_or(u64::MAX, |metadata| metadata.len());
+        Self { path, position }
+    }
+
+    pub(super) fn read_new_lines(&mut self) -> std::io::Result<Vec<String>> {
+        let mut file = File::open(&self.path)?;
+        let len = file.metadata()?.len();
+
+        // If launched before the file existed, start tailing from the current end (skip existing content).
+        if self.position == u64::MAX {
+            self.position = len;
+            return Ok(Vec::new());
+        }
+
+        if len < self.position {
+            self.position = 0;
+        }
+        file.seek(SeekFrom::Start(self.position))?;
+
+        let mut buf = Vec::new();
+        file.read_to_end(&mut buf)?;
+        if buf.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let Some(last_newline) = buf.iter().rposition(|&byte| byte == b'\n') else {
+            return Ok(Vec::new());
+        };
+
+        let complete = &buf[..=last_newline];
+        self.position += complete.len() as u64;
+
+        Ok(String::from_utf8_lossy(complete)
+            .lines()
+            .map(ToString::to_string)
+            .collect())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs::{self, OpenOptions};
+    use std::io::Write;
+
+    use super::*;
+
+    fn temp_log_path(name: &str) -> PathBuf {
+        let mut path = std::env::temp_dir();
+        path.push(name);
+        path
+    }
+
+    #[test]
+    fn ignores_content_written_before_the_tailer_was_created() {
+        let path = temp_log_path("wakfu_tailer_test_existing_content.txt");
+        fs::write(&path, "LIGNE 1\nLIGNE 2\n").unwrap();
+
+        let mut tailer = LogTailer::new(path.clone());
+        let lines = tailer.read_new_lines().unwrap();
+
+        assert!(lines.is_empty());
+        let _ = fs::remove_file(&path);
+    }
+
+    #[test]
+    fn returns_only_lines_appended_after_creation() {
+        let path = temp_log_path("wakfu_tailer_test_appended_content.txt");
+        fs::write(&path, "LIGNE 1\n").unwrap();
+
+        let mut tailer = LogTailer::new(path.clone());
+
+        let mut file = OpenOptions::new().append(true).open(&path).unwrap();
+        writeln!(file, "CREATION DU COMBAT").unwrap();
+        writeln!(file, "LIGNE 3").unwrap();
+        file.flush().unwrap();
+
+        let lines = tailer.read_new_lines().unwrap();
+
+        assert_eq!(
+            lines,
+            vec!["CREATION DU COMBAT".to_string(), "LIGNE 3".to_string()]
+        );
+        let _ = fs::remove_file(&path);
+    }
+
+    #[test]
+    fn holds_back_a_trailing_line_that_has_no_terminating_newline_yet() {
+        let path = temp_log_path("wakfu_tailer_test_partial_line.txt");
+        fs::write(&path, "").unwrap();
+
+        let mut tailer = LogTailer::new(path.clone());
+
+        let mut file = OpenOptions::new().append(true).open(&path).unwrap();
+        write!(file, "CREATION DU COMBAT\nLIGNE INCOMPLETE").unwrap();
+        file.flush().unwrap();
+
+        let lines = tailer.read_new_lines().unwrap();
+        assert_eq!(lines, vec!["CREATION DU COMBAT".to_string()]);
+
+        writeln!(file, " - suite").unwrap();
+        file.flush().unwrap();
+
+        let lines = tailer.read_new_lines().unwrap();
+        assert_eq!(lines, vec!["LIGNE INCOMPLETE - suite".to_string()]);
+
+        let _ = fs::remove_file(&path);
+    }
+
+    #[test]
+    fn rereads_from_the_start_after_truncation_or_rotation() {
+        let path = temp_log_path("wakfu_tailer_test_truncation.txt");
+        fs::write(&path, "LIGNE 1\nLIGNE 2\n").unwrap();
+
+        let mut tailer = LogTailer::new(path.clone());
+        tailer.read_new_lines().unwrap();
+
+        // Simulate a new Wakfu session starting a fresh, shorter log file.
+        fs::write(&path, "NOUVELLE LIGNE\n").unwrap();
+
+        let lines = tailer.read_new_lines().unwrap();
+        assert_eq!(lines, vec!["NOUVELLE LIGNE".to_string()]);
+
+        let _ = fs::remove_file(&path);
+    }
+}

@@ -1,82 +1,69 @@
+//! Tauri backend for the Wakfu DPT-meter: tails the Wakfu client's log file,
+//! parses combat events, tracks per-fight damage/heal attribution, and
+//! forwards `fight-event` payloads to the webview frontend.
+
+mod domain;
+mod adapter;
+mod application;
+
 use tauri::Manager;
 use tauri_plugin_log::{Target, TargetKind};
 
-const WAKFU_CHAT_LOG_PATH: &str =
-    "%APPDATA%\\zaap\\gamesLogs\\wakfu\\logs\\wakfu.log";
-
-#[cfg(test)]
-mod tests {
-    use std::fs::{read_to_string, remove_file};
-    use std::path::PathBuf;
-    use std::fs::File;
-    use std::io::Write;
-
-    #[test]
-    fn writes_and_contains_creation_du_combat() {
-        // chemin vers un fichier temporaire
-        let mut path: PathBuf = std::env::temp_dir();
-        path.push("wakfu_test_log.txt");
-
-        // écrire dans le fichier
-        let mut file = File::create(&path).expect("failed to create temp file");
-        writeln!(file, "LIGNE 1").unwrap();
-        writeln!(file, "CREATION DU COMBAT").unwrap();
-        writeln!(file, "LIGNE 3").unwrap();
-        file.flush().unwrap();
-
-        // lire et vérifier
-        let content = read_to_string(&path).expect("failed to read temp file");
-        assert!(content.contains("CREATION DU COMBAT"));
-
-        // cleanup
-        let _ = remove_file(&path);
+#[cfg_attr(not(debug_assertions), allow(unused_variables))]
+fn open_devtools_if_debug(app: &tauri::App) {
+    #[cfg(debug_assertions)]
+    {
+        match app.get_webview_window("main") {
+            Some(window) => window.open_devtools(),
+            None => log::warn!("main window not found; skipping devtools"),
+        }
     }
 }
 
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn start_log_watcher(app: &tauri::App) {
+    let app_handle = app.handle().clone();
+    let log_path = match adapter::wakfu::log::get_path() {
+        Ok(path) => path,
+        Err(err) => {
+            log::error!("failed to resolve the wakfu log file path: {err}");
+            return;
+        }
+    };
+
+    log::info!("Watching wakfu log file at {}", log_path.display());
+
+    match application::start_watching(app_handle, &log_path) {
+        Ok(debouncer) => {
+            app.manage(debouncer);
+        }
+        Err(err) => {
+            log::error!("failed to start watching the wakfu log file: {err}");
+        }
+    }
 }
 
-
+/// Boots the Tauri application: registers plugins, starts the wakfu log
+/// watcher, and blocks until the app window closes.
+///
+/// # Panics
+/// Rust panics if the Tauri event loop fails to start (e.g. window/platform init
+/// failure) — `Builder::run` returns `Err` and the trailing `.expect` aborts.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
-            #[cfg(debug_assertions)] // only include this code on debug builds
-            {
-                let window = app.get_webview_window("main").unwrap();
-                window.open_devtools();
-            }
-            Ok(())
-        })
-        .setup(|app| {
-            let app_handle = app.handle().clone();
-
-            log::info!(
-                "Create threads and setup debouncing watch for log file {}",
-                WAKFU_CHAT_LOG_PATH
-            );
-
-            //let (tx, rx) = std::sync::mpsc::channel();
-            //let mut debouncer = declare_debouncer(tx);
-
-            tauri::async_runtime::spawn(async move {
-                log::info!("Initializing watch and waiting for events");
-                /*debouncer
-                    .watcher()
-                    .watch(Path::new(WAKFU_CHAT_LOG_PATH), RecursiveMode::NonRecursive)
-                    .unwrap();
-
-                handle_debouncer_result(&app_handle, rx);*/
-            });
-
+            open_devtools_if_debug(app);
+            start_log_watcher(app);
             Ok(())
         })
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_log::Builder::new()
-                .level(log::LevelFilter::Info)
+                .level(if cfg!(debug_assertions) {
+                    log::LevelFilter::Debug
+                } else {
+                    log::LevelFilter::Info
+                })
                 .target(Target::new(TargetKind::Webview))
                 .format(|out, message, record| {
                     out.finish(format_args!(
@@ -85,12 +72,11 @@ pub fn run() {
                         record.level(),
                         record.target(),
                         message
-                    ))
+                    ));
                 })
                 .build(),
         )
         .plugin(tauri_plugin_single_instance::init(|_app, _args, _cwd| {}))
-        .invoke_handler(tauri::generate_handler![greet])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

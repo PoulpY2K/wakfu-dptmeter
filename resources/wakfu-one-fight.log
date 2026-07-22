@@ -1,0 +1,438 @@
+ INFO 12:49:43,502 [main] (aVt:410) - Chargement de la configuration depuis le fichier : 'C:\Users\poulpyy\AppData\Roaming\zaap\gamesLogs\wakfu/config'
+ERROR 12:49:43,504 [main] (FE:324) - Impossible de trouver le fichier de propriété C:\Users\poulpyy\AppData\Roaming\zaap\gamesLogs\wakfu/config
+ INFO 12:49:43,506 [main] (aVt:410) - Chargement de la configuration depuis le fichier : 'config.properties'
+ INFO 12:49:43,513 [main] (com.ankamagames.wakfu.client.WakfuClient:284) - Configuration loaded for region WESTERN (by country detection for null): config.properties
+ INFO 12:49:43,746 [main] (eEt:113) - 1.92 (build -1 [2026-07-20 @ 12H49min43])
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -Xms4G
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -Xmx6G
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -XX:+UnlockExperimentalVMOptions
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -XX:+UseG1GC
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -XX:G1NewSizePercent=20
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -XX:G1ReservePercent=20
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -Djava.net.preferIPv4Stack=true
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -Dsun.awt.noerasebackground=true
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -Dsun.java2d.noddraw=true
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -Djogl.disable.openglarbcontext
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - --add-opens=java.desktop/sun.awt=ALL-UNNAMED
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -Dsun.java2d.uiScale.enabled=true
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:195) - -Djava.library.path=natives/
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:197) - java.vm.vendor = Eclipse Adoptium
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:198) - java.runtime.name = OpenJDK Runtime Environment
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:199) - java.vm.name = OpenJDK 64-Bit Server VM
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:200) - java.vm.version = 21.0.11+10-LTS
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:201) - java.runtime.version = 21.0.11+10-LTS
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:202) - os.name = Windows 11
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:203) - os.arch = amd64
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:204) - os.version = 10.0
+ INFO 12:49:43,775 [main] (com.ankamagames.wakfu.client.WakfuClient:205) - sun.os.patch.level = 
+ INFO 12:49:43,776 [main] (com.ankamagames.wakfu.client.WakfuClient:206) - user.language = fr
+ INFO 12:49:43,776 [main] (com.ankamagames.wakfu.client.WakfuClient:207) - user.country = FR
+ INFO 12:49:43,780 [main] (com.ankamagames.wakfu.client.WakfuClient:213) - log path=C:\Users\poulpyy\AppData\Roaming\zaap\gamesLogs\wakfu
+ INFO 12:49:44,040 [MessageScheduler] (aBA:299) - MessageScheduler running
+ INFO 12:49:44,138 [AWT-EventQueue-0] (cFw:27) - Starting cFC...
+ WARN 12:49:44,138 [AWT-EventQueue-0] (cFC:114) - Updater communication service is not currently configured: Service is unactivated.
+ INFO 12:49:44,189 [AWT-EventQueue-0] (UH:34) - GameDate initialized. Timezone : sun.util.calendar.ZoneInfo[id="UTC",offset=0,dstSavings=0,useDaylight=false,transitions=0,lastRule=null]
+ INFO 12:49:44,192 [AWT-EventQueue-0] (ahF:99) - Initializing GLApplication UI
+ INFO 12:49:45,079 [AWT-EventQueue-0] (ahF:103) - GLappUI : Workspace created
+ INFO 12:49:45,079 [AWT-EventQueue-0] (ahF:107) - GLappUI : Renderer created
+ INFO 12:49:45,111 [AWT-EventQueue-0] (ahF:134) - GLappUI : Frame created
+ INFO 12:49:45,116 [AWT-EventQueue-0] (ahF:422) - Applying resolution : {Resolution : 1921x1081x32 Windowed 240Hz Prefered screen ID: \Display0 x: 0 y: 0 hide taskbar: true}
+ INFO 12:49:45,242 [AWT-EventQueue-0] (ahF:450) - Surface scale : [1.0, 1.0]
+ INFO 12:49:45,245 [AWT-EventQueue-0] (ahF:354) - GLappUI : GL Rendering started
+ INFO 12:49:45,284 [AWT-EventQueue-0] (fRK:58) - [Xulor] Registering tags
+ INFO 12:49:46,326 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themeSimple.png
+ INFO 12:49:46,328 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themeSimple2.png
+ INFO 12:49:46,329 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themeSimple3.png
+ INFO 12:49:46,332 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themeDefault.png
+ INFO 12:49:46,338 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themeDefault2.png
+ INFO 12:49:46,339 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themeOver.png
+ INFO 12:49:46,340 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themeOver2.png
+ INFO 12:49:46,341 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themePressed.png
+ INFO 12:49:46,342 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themePressed2.png
+ INFO 12:49:46,344 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themeDisabled.png
+ INFO 12:49:46,345 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/themeDisabled2.png
+ INFO 12:49:46,346 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/selectedThemeDefault.png
+ INFO 12:49:46,348 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/selectedThemeOver.png
+ INFO 12:49:46,349 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/selectedThemePressed.png
+ INFO 12:49:46,349 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/selectedThemeDisabled.png
+ INFO 12:49:46,351 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/iconesMruDefault.png
+ INFO 12:49:46,352 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/iconesMruDisabled.png
+ INFO 12:49:46,353 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/iconesMruOver.png
+ INFO 12:49:46,353 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/iconesMruPressed.png
+ INFO 12:49:46,355 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/havreSacDecor.png
+ INFO 12:49:46,356 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/dungeon.png
+ INFO 12:49:46,357 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/addCompanion.png
+ INFO 12:49:46,359 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/newCharacter.png
+ INFO 12:49:46,360 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/Paysage.png
+ INFO 12:49:46,361 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/socle_reward.png
+ INFO 12:49:46,362 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/passeport.png
+ INFO 12:49:46,363 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/ladder_donjon_empty.png
+ INFO 12:49:46,365 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardBlueFull.png
+ INFO 12:49:46,365 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardBlueEmpty.png
+ INFO 12:49:46,366 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardRedFull.png
+ INFO 12:49:46,368 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardRedEmpty.png
+ INFO 12:49:46,368 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardGreenFull.png
+ INFO 12:49:46,369 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardGreenEmpty.png
+ INFO 12:49:46,370 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardWhiteFull.png
+ INFO 12:49:46,371 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardWhiteEmpty.png
+ INFO 12:49:46,372 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardMultiEmpty.png
+ INFO 12:49:46,373 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardMultiFull.png
+ INFO 12:49:46,374 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/shardMultiHalf.png
+ INFO 12:49:46,375 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/itemsRarityBorders/old.png
+ INFO 12:49:46,375 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/itemsRarityBorders/common.png
+ INFO 12:49:46,376 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/itemsRarityBorders/rare.png
+ INFO 12:49:46,377 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/itemsRarityBorders/mythic.png
+ INFO 12:49:46,378 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/itemsRarityBorders/legendary.png
+ INFO 12:49:46,379 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/itemsRarityBorders/relic.png
+ INFO 12:49:46,380 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/itemsRarityBorders/souvenir.png
+ INFO 12:49:46,380 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/itemsRarityBorders/epic.png
+ INFO 12:49:46,381 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/l_flag.png
+ INFO 12:49:46,382 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/dungeonGameplay/0.png
+ INFO 12:49:46,384 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/dungeonGameplay/1.png
+ INFO 12:49:46,385 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/dungeonGameplay/2.png
+ INFO 12:49:46,385 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/dungeonGameplay/3.png
+ INFO 12:49:46,386 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/dungeonGameplay/4.png
+ INFO 12:49:46,387 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/dungeonGameplay/5.png
+ INFO 12:49:46,388 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/dungeonGameplay/6.png
+ INFO 12:49:46,389 [AWT-EventQueue-0] (fOW:2008) - Custom texture loaded : file:/C:/Users/poulpyy/AppData/Local/Ankama/Wakfu/./themes/theme_Ymoka_Nightflow/theme/images/unidentifiedItem.png
+ INFO 12:49:46,680 [AWT-EventQueue-0] (ayh:271) - Renderer.init started
+ INFO 12:49:46,680 [AWT-EventQueue-0] (aye:40) - ------- GL dump ---------
+ INFO 12:49:46,695 [AWT-EventQueue-0] (aye:51) - GL_PROFILE : GL4bc
+ INFO 12:49:46,695 [AWT-EventQueue-0] (aye:53) - GL_RENDERER : NVIDIA GeForce RTX 4070 Ti SUPER/PCIe/SSE2
+ INFO 12:49:46,695 [AWT-EventQueue-0] (aye:54) - GL_VENDOR : NVIDIA Corporation
+ INFO 12:49:46,695 [AWT-EventQueue-0] (aye:55) - GL_VERSION : 4.6.0 NVIDIA 610.74
+ INFO 12:49:46,695 [AWT-EventQueue-0] (aye:57) - GL_DEPTH_TEST = false
+ INFO 12:49:46,695 [AWT-EventQueue-0] (aye:58) - GL_SCISSOR_TEST = false
+ INFO 12:49:46,696 [AWT-EventQueue-0] (aye:59) - GL_ALPHA_TEST = false
+ INFO 12:49:46,696 [AWT-EventQueue-0] (aye:61) - GL_STENCIL_TEST = false;  Stencil depth = 8 bits
+ INFO 12:49:46,696 [AWT-EventQueue-0] (aye:62) - GL_CULL_FACE = false
+ INFO 12:49:46,696 [AWT-EventQueue-0] (aye:65) - GL_VIEWPORT = [0;0] - [1922;1058]
+ INFO 12:49:46,696 [AWT-EventQueue-0] (aye:68) - GL_SCISSOR_BOX = [0;0] - [1922;1058]
+ INFO 12:49:46,697 [AWT-EventQueue-0] (aye:70) - GL_MAX_ELEMENTS_INDICES = 1048576
+ INFO 12:49:46,697 [AWT-EventQueue-0] (aye:72) - GL_MAX_ELEMENTS_VERTICES = 1048576
+ INFO 12:49:46,697 [AWT-EventQueue-0] (aye:75) - GL SHADING LANGUAGE VERSION SUPPORTED = 4.60 NVIDIA
+ INFO 12:49:46,702 [AWT-EventQueue-0] (ayh:341) - Using GLSL shaders
+ INFO 12:49:46,702 [AWT-EventQueue-0] (ayh:345) - Renderer.init ended
+ INFO 12:49:46,754 [AWT-EventQueue-0] (aIC:64) - UI scale option value = 0
+ INFO 12:49:46,754 [AWT-EventQueue-0] (aIC:66) - OS screen scale = 1.0
+ INFO 12:49:46,756 [AWT-EventQueue-0] (avx:37) - Initializing hardware tests...
+ INFO 12:49:46,897 [AWT-EventQueue-0] (avx:52) - Testing supported features...
+ INFO 12:49:46,897 [AWT-EventQueue-0] (avx:63) - 	* GL render targets... supported !
+ INFO 12:49:46,897 [AWT-EventQueue-0] (avx:63) - 	* GL texture compression... supported !
+ INFO 12:49:46,897 [AWT-EventQueue-0] (avx:63) - 	* GL texture non power of two... supported !
+ INFO 12:49:46,897 [AWT-EventQueue-0] (avx:63) - 	* GL multi-sampling... supported !
+ INFO 12:49:46,897 [AWT-EventQueue-0] (avx:63) - 	* GL multi-texturing... supported !
+ INFO 12:49:46,897 [AWT-EventQueue-0] (avx:63) - 	* GL fragment shaders... supported !
+ INFO 12:49:46,897 [AWT-EventQueue-0] (avx:63) - 	* GL vertex shaders... supported !
+ INFO 12:49:46,897 [AWT-EventQueue-0] (avx:63) - 	* GL compressed text image 2d fonction... supported !
+ INFO 12:49:46,906 [AWT-EventQueue-0] (avx:63) - 	* Basic Vsync (0-1)... supported !
+ INFO 12:49:46,906 [AWT-EventQueue-0] (avx:63) - 	* Adaptive Vsync swap control (-1 value)... supported !
+ INFO 12:49:46,906 [AWT-EventQueue-0] (avx:63) - 	* OpenGL Shading language version is 120 or higher... supported !
+ INFO 12:49:46,906 [AWT-EventQueue-0] (avx:63) - 	* OpenGL driver in use are faulty AMD Adrenalin driver... not supported !
+ INFO 12:49:46,907 [AWT-EventQueue-0] (avx:63) - 	* AL debug Extension... supported !
+ INFO 12:49:46,907 [AWT-EventQueue-0] (avx:63) - 	* AL effects... supported !
+ INFO 12:49:46,907 [AWT-EventQueue-0] (avx:63) - 	* AL filters... supported !
+ INFO 12:49:46,907 [AWT-EventQueue-0] (avx:63) - 	* ALC Enumeration Extension... supported !
+ INFO 12:49:46,907 [AWT-EventQueue-0] (avx:63) - 	* ALC Enumerate All Extension... supported !
+ INFO 12:49:46,907 [AWT-EventQueue-0] (avx:63) - 	* AL SOFT events Extension... supported !
+ INFO 12:49:46,907 [AWT-EventQueue-0] (avx:63) - 	* ALC Soft system events Extension... supported !
+ INFO 12:49:46,908 [AWT-EventQueue-0] (avx:63) - 	* ALC Soft default playback device change event support... supported !
+ INFO 12:49:46,908 [AWT-EventQueue-0] (avx:63) - 	* ALC Soft HRTF Extension... supported !
+ INFO 12:49:46,908 [AWT-EventQueue-0] (avx:63) - 	* ALC Soft Output mode Extension... supported !
+ INFO 12:49:46,908 [AWT-EventQueue-0] (avx:63) - 	* ALC Soft reopen device Extension... supported !
+ INFO 12:49:46,908 [AWT-EventQueue-0] (avx:72) - Cleaning up hardware tests...
+ INFO 12:49:47,010 [AWT-EventQueue-0] (aHV:863) - ------- AL dump ---------
+ INFO 12:49:47,050 [SimpleBinaryStorage] (aqb:191) - BinaryStorage started Thread[#53,SimpleBinaryStorage,5,main]
+ INFO 12:49:47,121 [Initialization-Tasks-0] (aIG:633) - Loading embedded DayLight file.
+ERROR 12:49:47,121 [Initialization-Tasks-0] (aIG:639) - Le dayLight file n'est pas trouvable, on utilise celui par défaut
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) - AL_VENDOR      OpenAL Community
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) - AL_RENDERER    OpenAL Soft
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) - AL_VERSION     1.1 (1.1 ALSOFT 1.24.3)
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) - AL_VENDOR_VERS 1.24.3 (ALSOFT 1.24.3)
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) - AL_EXTENSIONS  EAX EAX2.0 EAX3.0 EAX4.0 EAX5.0 EAX-RAM AL_EXT_ALAW AL_EXT_BFORMAT AL_EXT_debug AL_EXT_direct_context AL_EXT_DOUBLE AL_EXT_EXPONENT_DISTANCE AL_EXT_FLOAT32 AL_EXT_IMA4 AL_EXT_LINEAR_DISTANCE AL_EXT_MCFORMATS AL_EXT_MULAW AL_EXT_MULAW_BFORMAT AL_EXT_MULAW_MCFORMATS AL_EXT_OFFSET AL_EXT_source_distance_model AL_EXT_SOURCE_RADIUS AL_EXT_STATIC_BUFFER AL_EXT_STEREO_ANGLES AL_LOKI_quadriphonic AL_SOFT_bformat_ex AL_SOFT_bformat_hoa AL_SOFT_block_alignment AL_SOFT_buffer_length_query AL_SOFT_callback_buffer AL_SOFTX_convolution_effect AL_SOFT_deferred_updates AL_SOFT_direct_channels AL_SOFT_direct_channels_remix AL_SOFT_effect_target AL_SOFT_events AL_SOFT_gain_clamp_ex AL_SOFTX_hold_on_disconnect AL_SOFT_loop_points AL_SOFTX_map_buffer AL_SOFT_MSADPCM AL_SOFT_source_latency AL_SOFT_source_length AL_SOFTX_source_panning AL_SOFT_source_resampler AL_SOFT_source_spatialize AL_SOFT_source_start_delay AL_SOFT_UHJ AL_SOFT_UHJ_ex
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) - ALC_VERSION     1.1
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) - ALC_DEF_OUTPUT (With ALC_ENUMERATION_EXT) OpenAL Soft
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) - ALC_DEF_OUTPUT (With ALC_ENUMERATE_ALL_EXT) OpenAL Soft on System (Elgato Virtual Audio)
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) - ALC_DEF_CAPTURE OpenAL Soft on Microphone (Voicemod Virtual Audio Device (WDM))
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) - ALC_SOFT_system_events supported
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) -     ALC_EVENT_TYPE_DEVICE_ADDED_SOFT event for playback devices is supported
+
+ INFO 12:49:47,264 [AWT-EventQueue-0] (aHV:865) -     ALC_EVENT_TYPE_DEVICE_ADDED_SOFT event for capture devices is supported
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     ALC_EVENT_TYPE_DEVICE_REMOVED_SOFT event for playback devices is supported
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     ALC_EVENT_TYPE_DEVICE_REMOVED_SOFT event for capture devices is supported
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     ALC_EVENT_TYPE_DEFAULT_DEVICE_CHANGED_SOFT event for playback devices is supported
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     ALC_EVENT_TYPE_DEFAULT_DEVICE_CHANGED_SOFT event for capture devices is supported
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) - Output devices (With ALC_ENUMERATE_ALL_EXT):
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on System (Elgato Virtual Audio), output, default true, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Ligne (Voicemod Virtual Audio Device (WDM)), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Voice chat (Elgato Virtual Audio), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Headphones (2- Elgato Wave:3), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Music (Elgato Virtual Audio), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Casque (Arctis Nova Pro Wireless), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Sortie numérique (High Definition Audio Device), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Elgato Wave:3 (Elgato Virtual Audio), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on SFX (Elgato Virtual Audio), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Game (Elgato Virtual Audio), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Aux 1 (Elgato Virtual Audio), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Browser (Elgato Virtual Audio), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Aux 2 (Elgato Virtual Audio), output, default false, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,265 [AWT-EventQueue-0] (aHV:865) - Output devices (With ALC_ENUMERATION_EXT):
+
+ INFO 12:49:47,266 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft, output, default true, mixer[freq 48000, refresh 100 (min latency 10.0 ms)], sources[mono 255, stereo 1]
+
+ INFO 12:49:47,266 [AWT-EventQueue-0] (aHV:865) - Capture devices:
+
+ INFO 12:49:47,266 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Microphone (Voicemod Virtual Audio Device (WDM)), input, default true
+
+ INFO 12:49:47,266 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Mic In (2- Elgato Wave:3), input, default false
+
+ INFO 12:49:47,266 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Personal Mix (Elgato Virtual Audio), input, default false
+
+ INFO 12:49:47,266 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Microphone Mix (Elgato Virtual Audio), input, default false
+
+ INFO 12:49:47,266 [AWT-EventQueue-0] (aHV:865) -     OpenAL Soft on Stream Mix (Elgato Virtual Audio), input, default false
+
+ INFO 12:49:47,266 [AWT-EventQueue-0] (aHV:867) - HRTF Status : disabled
+ INFO 12:49:47,267 [AWT-EventQueue-0] (aHV:868) - Output Mode Status : Basic 2-channel mixing (e.g. pan-pot)
+ INFO 12:49:47,271 [AWT-EventQueue-0] (aHV:869) - Current context attributes : {4104=>100, 4096=>1, 6555=>3, 131075=>4, 131074=>0, 4103=>48000, 131073=>1, 4105=>0, 4097=>1, 6554=>0, 6572=>6574, 6547=>0, 6546=>0, 4113=>1, 4112=>255}
+ INFO 12:49:47,271 [AWT-EventQueue-0] (aHV:773) - Current sound context has debug output disabled.
+ INFO 12:49:47,292 [AWT-EventQueue-0] (aHV:695) - Switch to following device : OpenAL Soft on Game (Elgato Virtual Audio) - source : contextSwitch
+ INFO 12:49:47,292 [AWT-EventQueue-0] (aHV:296) - Max available sources : 255
+ INFO 12:49:47,292 [AWT-EventQueue-0] (aHV:702) - HRTF Status : disabled
+ INFO 12:49:47,292 [AWT-EventQueue-0] (aHV:703) - Output Mode Status : Basic 2-channel mixing (e.g. pan-pot)
+ INFO 12:49:47,292 [AWT-EventQueue-0] (aHV:704) - Current contexts attributes : {4104=>100, 4096=>1, 6555=>3, 131075=>4, 131074=>0, 4103=>48000, 131073=>1, 4105=>0, 4097=>1, 6554=>0, 6572=>6574, 6547=>0, 6546=>0, 4113=>1, 4112=>255}
+ INFO 12:49:47,345 [SoundManager] (aHV:954) - SoundManager running
+ INFO 12:49:47,682 [Initialization-Tasks-0] (bcT:54) - Default mode. Retrieve class eBy
+ INFO 12:49:47,684 [pool-5-thread-1] (eBr:121) - connect(ENV_VARIABLES)
+ INFO 12:49:47,716 [pool-5-thread-1] (bcU:60) - Connected to Zaap. Starting class eBy fill
+ INFO 12:49:47,719 [pool-6-thread-1] (eBr:197) - User info received from Zaap
+ INFO 12:49:47,723 [pool-6-thread-1] (bcV:65) - class eBy fetched
+ INFO 12:49:49,576 [Initialization-Tasks-0] (fLP:54) - Preload class fLP
+ INFO 12:49:49,584 [Initialization-Tasks-0] (uk.co.caprica.vlcj.Info:77) - vlcj: 3.10.1
+ INFO 12:49:49,584 [Initialization-Tasks-0] (uk.co.caprica.vlcj.Info:78) - java: 21.0.11 Eclipse Adoptium
+ INFO 12:49:49,584 [Initialization-Tasks-0] (uk.co.caprica.vlcj.Info:79) - java home: C:\Users\poulpyy\AppData\Local\Ankama\Wakfu\jre
+ INFO 12:49:49,584 [Initialization-Tasks-0] (uk.co.caprica.vlcj.Info:80) - os: Windows 11 10.0 amd64
+ INFO 12:49:49,596 [Initialization-Tasks-0] (uk.co.caprica.vlcj.binding.LibVlcFactory:171) - vlc: 2.2.4 Weatherwax, changeset 2.2.4-0-g888b7e89
+ INFO 12:49:49,596 [Initialization-Tasks-0] (uk.co.caprica.vlcj.binding.LibVlcFactory:172) - libvlc: C:\Users\poulpyy\AppData\Local\Ankama\Wakfu\natives\vlc-windows\libvlc.dll
+ INFO 12:49:50,442 [Initialization-Tasks-0] (bcs:43) - Default mode. Starting connection to Zaap
+ INFO 12:49:50,443 [pool-7-thread-1] (eBr:121) - connect(ENV_VARIABLES)
+ INFO 12:49:50,447 [pool-7-thread-1] (bct:48) - Connected to Zaap. Starting token fill
+ INFO 12:49:50,581 [pool-8-thread-1] (eBr:162) - Token received from Zaap
+ INFO 12:49:50,581 [pool-8-thread-1] (bcu:52) - Token obtained from Zaap. Starting autologin
+ INFO 12:49:50,736 [AWT-EventQueue-0] (cgd:71) - Raison de la déconnection de l'entité -1 : 39
+ INFO 12:49:50,738 [AWT-EventQueue-0] (aVj:62) - Connexion au proxy :wakfu-dispatcher.ankama-games.com:5558 / ssl : true
+ INFO 12:49:51,064 [Net-Cnx-wakfu-dispatcher.ankama-games.com:5558>0] (cgf:135) - onNewConnection ChannelHandlerContext(aVk#0, [id: 0x531fa066, L:/192.168.1.21:62159 - R:wakfu-dispatcher.ankama-games.com/52.208.195.184:5558])
+ INFO 12:49:51,643 [AWT-EventQueue-0] (cgp:375) - Authentication result 0
+ INFO 12:49:54,457 [AWT-EventQueue-0] (cgp:360) - Authentication token received from dispatch server : b5c9dfd7-5087-4bb6-bbd5-21f0a2dd8e3f errorCode=0
+ INFO 12:49:54,465 [AWT-EventQueue-0] (aVv:664) - Sending DisconnectionMessage to Servers. Reason : {Dispatch}
+ INFO 12:49:54,466 [AWT-EventQueue-0] (cgd:71) - Raison de la déconnection de l'entité -1 : 39
+ INFO 12:49:54,466 [AWT-EventQueue-0] (aVj:62) - Connexion au proxy :wakfu-pandora.ankama-games.com:5556 / ssl : true
+ INFO 12:49:54,468 [Net-Cnx-wakfu-dispatcher.ankama-games.com:5558>0] (cgf:43) - Connexion avec le serveur perdue ChannelHandlerContext(aVk#0, [id: 0x531fa066, L:/192.168.1.21:62159 ! R:wakfu-dispatcher.ankama-games.com/52.208.195.184:5558])
+ INFO 12:49:54,571 [Net-Cnx-wakfu-pandora.ankama-games.com:5556>0] (cgf:135) - onNewConnection ChannelHandlerContext(aVk#0, [id: 0xe041f5d0, L:/192.168.1.21:62168 - R:wakfu-pandora.ankama-games.com/34.241.166.4:5556])
+ INFO 12:49:54,625 [inter-chat-2-1] (io.netty.util.internal.logging.AbstractInternalLogger:148) - [id: 0x1b19754c] CONNECT: zaap-chat.ankama.com/108.128.105.128:6337
+ INFO 12:49:54,657 [inter-chat-2-1] (io.netty.util.internal.logging.AbstractInternalLogger:148) - [id: 0x1b19754c, L:/192.168.1.21:62169 - R:zaap-chat.ankama.com/108.128.105.128:6337] ACTIVE
+ INFO 12:49:54,861 [AWT-EventQueue-0] (cgd:71) - Raison de la déconnection de l'entité -1 : 2
+ INFO 12:49:54,889 [AWT-EventQueue-0] (UP:73) - WakfuGameCalendar : adding periodic ClimateUpdateEvent event, period= 12 minutes 
+ERROR 12:49:54,913 [OkHttp https://haapi.ankama.com/...] (aZw:49) - [CHAT] Error 403 requesting Chat token : {"status":403,"message":"Unauthorized service '\\Ankama\\Account'"}
+ WARN 12:49:55,158 [AsyncLoader-3] (Gi:59) - Unable to read file:./contents/animations/equipments/equipments.jar!/210320101.anm : JAR entry 210320101.anm not found in .\contents\animations\equipments\equipments.jar
+ INFO 12:49:55,175 [AWT-EventQueue-0] (aZO:35) - Receiving companion list
+ INFO 12:49:55,178 [AWT-EventQueue-0] (aZO:58) - Companions received : 3
+ INFO 12:49:55,323 [OkHttp https://haapi.ankama.com/...] (chq:353) - Device information sent
+ERROR 12:49:59,758 [inter-chat-2-1] (aZu:65) - [CHAT] Authentication failed error code=9
+ WARN 12:49:59,786 [inter-chat-2-1] (aZn:52) - [CHAT] Connection lost, reconnection in 1554ms
+ INFO 12:50:01,342 [inter-chat-2-1] (io.netty.util.internal.logging.AbstractInternalLogger:148) - [id: 0x1b19754c, L:/192.168.1.21:62169 ! R:zaap-chat.ankama.com/108.128.105.128:6337] INACTIVE
+ INFO 12:50:01,342 [inter-chat-2-2] (io.netty.util.internal.logging.AbstractInternalLogger:148) - [id: 0x73db29d6] CONNECT: zaap-chat.ankama.com/108.128.105.128:6337
+ INFO 12:50:01,373 [inter-chat-2-2] (io.netty.util.internal.logging.AbstractInternalLogger:148) - [id: 0x73db29d6, L:/192.168.1.21:62187 - R:zaap-chat.ankama.com/108.128.105.128:6337] ACTIVE
+ INFO 12:50:01,429 [AWT-EventQueue-0] (cgx:256) - Received FriendListMessage
+ INFO 12:50:01,439 [AWT-EventQueue-0] (chk:134) - [NATION] Reception d'un message de synchro de nation demandant l'ajout d'une nouvelle nation : 31
+ INFO 12:50:01,439 [AWT-EventQueue-0] (chk:134) - [NATION] Reception d'un message de synchro de nation demandant l'ajout d'une nouvelle nation : 33
+ INFO 12:50:01,439 [AWT-EventQueue-0] (chk:134) - [NATION] Reception d'un message de synchro de nation demandant l'ajout d'une nouvelle nation : 32
+ INFO 12:50:01,439 [AWT-EventQueue-0] (chk:134) - [NATION] Reception d'un message de synchro de nation demandant l'ajout d'une nouvelle nation : 30
+ INFO 12:50:01,496 [AWT-EventQueue-0] (ber:407) - Déserialisation des achievements : size=13801
+ WARN 12:50:01,496 [AWT-EventQueue-0] (ber:463) - Achievement inexistant : Id=2193
+ WARN 12:50:01,496 [AWT-EventQueue-0] (ber:463) - Achievement inexistant : Id=2194
+ WARN 12:50:01,497 [AWT-EventQueue-0] (ber:463) - Achievement inexistant : Id=5565
+ WARN 12:50:01,497 [AWT-EventQueue-0] (ber:463) - Achievement inexistant : Id=5566
+ WARN 12:50:01,497 [AWT-EventQueue-0] (ber:463) - Achievement inexistant : Id=5567
+ WARN 12:50:01,497 [AWT-EventQueue-0] (ber:463) - Achievement inexistant : Id=1558
+ WARN 12:50:01,497 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=3344
+ WARN 12:50:01,497 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=3345
+ WARN 12:50:01,498 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=2917
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=2918
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=2920
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=2921
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=2925
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=2926
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=6572
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=1489
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=1490
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=1491
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=6614
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=6616
+ WARN 12:50:01,499 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=6619
+ WARN 12:50:01,500 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=6621
+ WARN 12:50:01,500 [AWT-EventQueue-0] (ber:476) - Objectif inexistant : Id=6624
+ INFO 12:50:01,616 [AWT-EventQueue-0] (baz:89) - Loading chat file.
+ INFO 12:50:02,164 [AWT-EventQueue-0] (Wh:60) - cdt initialisé, centré sur (0,-1)
+ WARN 12:50:02,166 [AWT-EventQueue-0] (bLo:112) - Impossible de trouver la texture jar:file:./contents/gui_jar/gui.jar!/miscellaneous/poi/58.tga key=hwBuidingIconRedPath
+ WARN 12:50:02,166 [AWT-EventQueue-0] (bLo:112) - Impossible de trouver la texture jar:file:./contents/gui_jar/gui.jar!/miscellaneous/poi/57.tga key=hwBuidingIconOrangePath
+ WARN 12:50:02,166 [AWT-EventQueue-0] (bLo:112) - Impossible de trouver la texture jar:file:./contents/gui_jar/gui.jar!/miscellaneous/poi/56.tga key=hwBuidingIconGreenPath
+ INFO 12:50:02,369 [AWT-EventQueue-0] (chJ:254) - Challenge courant : -1030 (dans 0s)
+ INFO 12:50:02,394 [AWT-EventQueue-0] (ber:341) - Achievement activated : 5259
+ INFO 12:50:02,394 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] La quête Gurvamon a démarré.
+ INFO 12:50:02,415 [AWT-EventQueue-0] (aPV:174) - [Guilde] Guilde : on t'embrasse gros
+ INFO 12:50:04,838 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Blampy a rejoint le groupe
+ INFO 12:50:04,840 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Distipy a rejoint le groupe
+ INFO 12:50:04,881 [AWT-EventQueue-0] (ber:407) - Déserialisation des achievements : size=19327
+ INFO 12:50:04,908 [AWT-EventQueue-0] (ber:407) - Déserialisation des achievements : size=19327
+ INFO 12:50:05,135 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Marylpy a rejoint le groupe
+ INFO 12:50:05,138 [AWT-EventQueue-0] (ber:407) - Déserialisation des achievements : size=18584
+ INFO 12:50:05,152 [AWT-EventQueue-0] (ber:407) - Déserialisation des achievements : size=18584
+ INFO 12:50:10,262 [AWT-EventQueue-0] (Tc:407) - Invalid start cell for pathfind search : doesn't exist. HASHCODE : 2251877122473986
+ INFO 12:50:10,463 [AWT-EventQueue-0] (Tc:407) - Invalid start cell for pathfind search : doesn't exist. HASHCODE : 2251877122473985
+ INFO 12:50:10,568 [AWT-EventQueue-0] (Tc:407) - Invalid start cell for pathfind search : doesn't exist. HASHCODE : 2251859942539265
+ INFO 12:50:11,175 [AWT-EventQueue-0] (frH:215) - [NATION] Trying to remove 11049475 from {Nation id=0} after a disconnection but he's not in it
+ INFO 12:50:11,474 [AWT-EventQueue-0] (Tc:407) - Invalid start cell for pathfind search : doesn't exist. HASHCODE : 2251859942604802
+ INFO 12:50:11,589 [AWT-EventQueue-0] (frH:215) - [NATION] Trying to remove 11049475 from {Nation id=0} after a disconnection but he's not in it
+ INFO 12:50:14,498 [AWT-EventQueue-0] (UP:73) - WakfuGameCalendar : adding periodic ClimateUpdateEvent event, period= 12 minutes 
+ WARN 12:50:14,498 [AWT-EventQueue-0] (cky:29) - The fight with the id 1568151141 has not been found
+ INFO 12:50:14,527 [AWT-EventQueue-0] (ciD:117) - NetInFight Added
+ INFO 12:50:14,527 [AWT-EventQueue-0] (ciD:117) - NetInFight Added
+ INFO 12:50:14,591 [AWT-EventQueue-0] (aXI:47) - CREATION DU COMBAT
+ INFO 12:50:14,595 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568151141 Soeur Zerker breed : 4214 [-1724034221200073] isControlledByAI=true obstacleId : -1 join the fight at {Point3 : (-1, 3, 0)}
+ INFO 12:50:14,604 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568151141 Blampy breed : 13 [5547447] isControlledByAI=false obstacleId : -1 join the fight at {Point3 : (-1, 0, 0)}
+ INFO 12:50:14,654 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Votre combat est verrouillé, ce qui empêche d'autres joueurs de vous rejoindre.
+ INFO 12:50:14,953 [AWT-EventQueue-0] (ZN:1080) - Boucle infinie dans le process de l'anm jar:file:./contents/animations/npcs/npcs.jar!/187204214.anm animation courante=AnimStatique (probléme dans l'enchainement des goto ?)
+ INFO 12:50:14,954 [AWT-EventQueue-0] (ZN:1080) - Boucle infinie dans le process de l'anm jar:file:./contents/animations/npcs/npcs.jar!/187204214.anm animation courante=AnimStatique (probléme dans l'enchainement des goto ?)
+ INFO 12:50:14,956 [AWT-EventQueue-0] (ZN:1080) - Boucle infinie dans le process de l'anm jar:file:./contents/animations/npcs/npcs.jar!/187204214.anm animation courante=AnimStatique (probléme dans l'enchainement des goto ?)
+ INFO 12:50:14,966 [AWT-EventQueue-0] (ZN:1080) - Boucle infinie dans le process de l'anm jar:file:./contents/animations/npcs/npcs.jar!/187204214.anm animation courante=AnimStatique (probléme dans l'enchainement des goto ?)
+ INFO 12:50:14,973 [AWT-EventQueue-0] (ZN:1080) - Boucle infinie dans le process de l'anm jar:file:./contents/animations/npcs/npcs.jar!/187204214.anm animation courante=AnimStatique (probléme dans l'enchainement des goto ?)
+ INFO 12:50:14,979 [AWT-EventQueue-0] (ZN:1080) - Boucle infinie dans le process de l'anm jar:file:./contents/animations/npcs/npcs.jar!/187204214.anm animation courante=AnimStatique (probléme dans l'enchainement des goto ?)
+ INFO 12:50:14,984 [AWT-EventQueue-0] (ZN:1080) - Boucle infinie dans le process de l'anm jar:file:./contents/animations/npcs/npcs.jar!/187204214.anm animation courante=AnimStatique-Boucle (probléme dans l'enchainement des goto ?)
+ WARN 12:50:15,206 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id -5
+ WARN 12:50:15,207 [AWT-EventQueue-0] (bvm:58) - Pas de cible sur laquelle appliquer les HMI pour l'effet 310
+ WARN 12:50:15,207 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id 252845
+ WARN 12:50:15,207 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id 253027
+ WARN 12:50:15,208 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id 253028
+ WARN 12:50:15,208 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id 283474
+ INFO 12:50:15,208 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568151141 Distipy breed : 9 [11370102] isControlledByAI=false obstacleId : -1 join the fight at {Point3 : (0, 0, 0)}
+ WARN 12:50:15,255 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id -5
+ WARN 12:50:15,256 [AWT-EventQueue-0] (bvm:58) - Pas de cible sur laquelle appliquer les HMI pour l'effet 310
+ WARN 12:50:15,256 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id 252845
+ WARN 12:50:15,256 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id 253027
+ WARN 12:50:15,256 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id 253028
+ INFO 12:50:15,256 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568151141 Marylpy breed : 6 [11370104] isControlledByAI=false obstacleId : -1 join the fight at {Point3 : (0, 0, 0)}
+ INFO 12:50:19,023 [AWT-EventQueue-0] (cjr:53) - Unserializing effects for fighter 11370104, byte size : 16448
+ INFO 12:50:19,059 [AWT-EventQueue-0] (cjr:53) - Unserializing effects for fighter 5547447, byte size : 14452
+ INFO 12:50:19,103 [AWT-EventQueue-0] (cjr:53) - Unserializing effects for fighter 11370102, byte size : 16331
+ INFO 12:50:19,230 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 30 % Dommages infligés (Insaisissable)
+ INFO 12:50:19,240 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Marylpy: Pioche (+10 Niv.)
+ INFO 12:50:19,244 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Marylpy: 0 PW (Pioche mélangée)
+ INFO 12:50:19,258 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Fuyard (+1 Niv.)
+ INFO 12:50:19,275 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker lance le sort Transposition
+ INFO 12:50:20,629 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Marylpy: échange de position
+ INFO 12:50:20,635 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: -892 PV (Air)
+ INFO 12:50:21,535 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker lance le sort Châtiment (Critiques)
+ WARN 12:50:22,847 [AWT-EventQueue-0] (bvf:342) - [FIGHT_REFACTOR]Tentative de spawn du fighter 11049475 sans connaitre sa team
+ INFO 12:50:22,848 [AWT-EventQueue-0] (cko:37) - Starting join procedure for 11049475
+ INFO 12:50:23,547 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: -1 757 PV  (Feu)
+ INFO 12:50:23,549 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: Enflammé (Niv. 125)
+ INFO 12:50:23,549 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: 50 Tacle
+ INFO 12:50:27,272 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Flèche explosive
+ WARN 12:50:27,288 [AWT-EventQueue-0] (arx:744) - Impossible de récupérer la duree de l'animation 3_AnimTarget-FlecheExplosive dans jar:file:./contents/animations/players/players.jar!/90 : la definition n'est pas chargee
+ INFO 12:50:28,480 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: -1 975 PV  (Feu) (Parade !)
+ INFO 12:50:28,482 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+60 Niv.)
+ INFO 12:50:28,484 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Précision (+60 Niv.)
+ INFO 12:50:31,093 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Tir précis
+ INFO 12:50:32,298 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Tir précis (Niv. 1)
+ INFO 12:50:32,300 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+110 Niv.) (Esprit Affûté)
+ INFO 12:50:32,301 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 1 PW
+ INFO 12:50:32,302 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: La Pointe affûtée est prête !
+ INFO 12:50:32,303 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Balise affûtée (+1 Niv.)
+ INFO 12:50:32,396 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 2 PA (Parti pris)
+ INFO 12:50:32,397 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: -2 PM max (Parti pris)
+ INFO 12:50:34,209 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Flèche explosive (Critiques)
+ WARN 12:50:34,213 [AWT-EventQueue-0] (arx:744) - Impossible de récupérer la duree de l'animation 3_AnimTarget-FlecheExplosive dans jar:file:./contents/animations/players/players.jar!/90 : la definition n'est pas chargee
+ INFO 12:50:35,315 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: -5 465 PV  (Feu)
+ INFO 12:50:35,316 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: Frénésie (Niv. 3)
+ INFO 12:50:35,316 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: 60 % Dommages infligés
+ INFO 12:50:35,318 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: 3 PM
+ INFO 12:50:35,320 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+70 Niv.)
+ INFO 12:50:35,320 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Consomme Pointe affûtée
+ INFO 12:50:36,117 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: n'est plus sous l'emprise de 'Insaisissable'
+ INFO 12:50:36,118 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 20 % Dommages infligés (Insaisissable)
+ INFO 12:50:36,120 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] 55 secondes reportées pour le tour suivant.
+ INFO 12:50:36,225 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Poudre (+5 Niv.)
+ INFO 12:50:38,228 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Ruse
+ INFO 12:50:39,639 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: n'est plus sous l'emprise de 'Fuyard'
+ INFO 12:50:39,641 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Fourbe (+1 Niv.)
+ INFO 12:50:39,642 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Convertit sa maîtrise distance en maîtrise mêlée
+ INFO 12:50:40,447 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Pulsar
+ INFO 12:50:41,656 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Pulsar (+1 Niv.)
+ INFO 12:50:42,561 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Coup rapide (Critiques)
+ INFO 12:50:43,560 [AWT-EventQueue-0] (aPV:174) - [Recrutement (FR)] Galomède : Super pseudo
+ INFO 12:50:43,661 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Invoque un(e) Bombe Aveuglante 
+ INFO 12:50:43,661 [AWT-EventQueue-0] (eXG:105) - Instanciation d'une nouvelle invocation avec un id de -1724034220279884
+ INFO 12:50:43,662 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568151141 Bombe Aveuglante breed : 3795 [-1724034220279884] isControlledByAI=true obstacleId : 4 join the fight at {Point3 : (0, 0, 0)}
+ INFO 12:50:43,669 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Aveuglante: Bombe aveuglante (Niv. 2)
+ INFO 12:50:44,269 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PM
+ INFO 12:50:44,271 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Aveuglante: Bombe aveuglante (Niv. 4)
+ INFO 12:50:44,272 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PM (Trainée de poudre)
+ INFO 12:50:44,575 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Evanescence
+ INFO 12:50:45,773 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: se téléporte
+ INFO 12:50:46,889 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Evanescence - Fuyard (Niv. 55)
+ INFO 12:50:47,386 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Balle plombante (Critiques)
+ INFO 12:50:47,394 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Vous avez ramassé 1x Sang Coagulé .
+ INFO 12:50:47,396 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Vous avez ramassé 1x Sang Coagulé .
+ INFO 12:50:47,397 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Vous avez ramassé 1x Epaulettes Rageuses .
+ INFO 12:50:47,405 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Vous avez ramassé 1x Sang Coagulé .
+ INFO 12:50:47,409 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Vous venez de faire gagner 2 points à votre guilde !
+ INFO 12:50:48,392 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Invoque un(e) Bombe Paralysante 
+ INFO 12:50:48,392 [AWT-EventQueue-0] (eXG:105) - Instanciation d'une nouvelle invocation avec un id de -1724034220279727
+ INFO 12:50:48,392 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568151141 Bombe Paralysante breed : 3797 [-1724034220279727] isControlledByAI=true obstacleId : 5 join the fight at {Point3 : (0, -1, 0)}
+ INFO 12:50:48,399 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Paralysante: Bombe paralysante (Niv. 3)
+ INFO 12:50:49,697 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Soeur Zerker: -1 433 PV (Terre)
+ INFO 12:50:49,998 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Paralysante: Retour de dague (+1 Niv.)
+ INFO 12:50:50,000 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Paralysante: Bombe paralysante (Niv. 5)
+ INFO 12:50:50,002 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PM (Trainée de poudre)
+ INFO 12:50:50,004 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Le challenge "Séisme" est réussi.
+ INFO 12:50:50,011 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Vous avez gagné 9 kamas.
+ INFO 12:50:50,011 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Vous avez gagné 8 kamas.
+ INFO 12:50:50,013 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Marylpy : +2 872 642 points d'XP.  Prochain niveau dans : 1 639 789 973.
+ INFO 12:50:50,013 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy : +2 872 642 points d'XP.  Prochain niveau dans : 1 778 124 744.
+ INFO 12:50:50,014 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy : +24 350 230 points d'XP.  Prochain niveau dans : 38 163 593.
+ INFO 12:50:50,018 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Combat terminé, cliquez ici pour rouvrir l'écran de fin de combat. 
+ INFO 12:50:50,028 [AWT-EventQueue-0] (aWF:91) - [FIGHT] End fight with id 1568151141
+ INFO 12:50:50,030 [AWT-EventQueue-0] (ciD:122) - NetInFight Removed
+ WARN 12:50:50,033 [AWT-EventQueue-0] (bvE:67) - acteur gfxId=100503795 n'a pas une anim AnimStatique valide
+ WARN 12:50:50,033 [AWT-EventQueue-0] (bvE:67) - acteur gfxId=131 n'a pas une anim AnimStatique valide
+ WARN 12:50:50,034 [AWT-EventQueue-0] (bvE:67) - acteur gfxId=100503797 n'a pas une anim AnimStatique valide

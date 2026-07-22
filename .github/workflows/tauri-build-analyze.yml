@@ -1,0 +1,98 @@
+name: "Tauri build, upload and run analysis"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  build-tauri:
+    permissions:
+      contents: write
+      pull-requests: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "windows-latest"
+            args: ""
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: setup node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: lts/*
+
+      - name: setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        with:
+          bun-version: latest
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: cache rust
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4
+        with:
+          workspaces: "src-tauri"
+          cache-workspace-crates: "true"
+
+      - name: install frontend dependencies
+        run: bun install --ignore-scripts --frozen-lockfile # change this to npm, pnpm or bun depending on which one you use.
+
+      - name: install cargo llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+
+      - id: clippy
+        name: code analysis
+        working-directory: ./src-tauri
+        run: |
+          cargo clippy --all-targets --all-features --message-format=json > clippy-output.json
+
+      - id: lcov
+        name: code coverage
+        working-directory: ./src-tauri
+        run: cargo llvm-cov --all-features --workspace --lcov --output-path lcov-output.info
+
+      - name: upload analysis reports
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: sonar-reports
+          path: |
+            src-tauri/clippy-output.json
+            src-tauri/lcov-output.info
+          retention-days: 1
+
+
+  sonarqube:
+    runs-on: windows-latest
+    needs: build-tauri
+    name: SonarQube
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: download analysis reports
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: sonar-reports
+          path: reports
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@22918119ff8e1ca75a623e15c8296b6ea4fbe28f
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.rust.lcov.reportPaths=reports/lcov-output.info
+            -Dsonar.rust.clippyReport.reportPaths=reports/clippy-output.json
