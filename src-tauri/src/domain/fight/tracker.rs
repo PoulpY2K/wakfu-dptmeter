@@ -19,6 +19,11 @@ pub struct FightTracker {
     // that immediately follows it for the same summon name.
     pending_summon_owners: HashMap<String, i64>,
     current_cast: Option<CurrentCast>,
+    // Resolved entity id of whoever currently holds the turn. A SpellCast
+    // resolving to a different owner than this is what marks a turn
+    // boundary, since the log never says whose turn it is directly.
+    current_turn_owner: Option<i64>,
+    turn_counts: HashMap<i64, u32>,
 }
 
 impl FightTracker {
@@ -32,6 +37,8 @@ impl FightTracker {
         self.entity_id_by_name.clear();
         self.pending_summon_owners.clear();
         self.current_cast = None;
+        self.current_turn_owner = None;
+        self.turn_counts.clear();
     }
 
     fn resolve_owner_entity_id(&self, name: &str) -> Option<i64> {
@@ -63,10 +70,7 @@ impl FightTracker {
                 actor_name,
                 spell_name,
                 is_critical,
-            } => {
-                self.handle_spell_cast(&actor_name, spell_name, is_critical);
-                Vec::new()
-            }
+            } => self.handle_spell_cast(&actor_name, spell_name, is_critical),
             LogEvent::HpChange {
                 name,
                 amount,
@@ -128,14 +132,42 @@ impl FightTracker {
         }
     }
 
-    fn handle_spell_cast(&mut self, actor_name: &str, spell_name: String, is_critical: bool) {
-        self.current_cast = self
-            .resolve_owner_entity_id(actor_name)
-            .map(|caster_entity_id| CurrentCast {
-                caster_entity_id,
-                spell_name,
-                is_critical,
-            });
+    fn handle_spell_cast(
+        &mut self,
+        actor_name: &str,
+        spell_name: String,
+        is_critical: bool,
+    ) -> Vec<FightEvent> {
+        let Some(caster_entity_id) = self.resolve_owner_entity_id(actor_name) else {
+            self.current_cast = None;
+            return Vec::new();
+        };
+        self.current_cast = Some(CurrentCast {
+            caster_entity_id,
+            spell_name,
+            is_critical,
+        });
+
+        if self.current_turn_owner == Some(caster_entity_id) {
+            return Vec::new();
+        }
+        self.current_turn_owner = Some(caster_entity_id);
+        let turn_number = self.turn_counts.entry(caster_entity_id).or_insert(0);
+        *turn_number += 1;
+        let turn_number = *turn_number;
+
+        let (Some(fight_id), Some(combatant)) =
+            (self.fight_id, self.participants.get(&caster_entity_id))
+        else {
+            return Vec::new();
+        };
+        vec![FightEvent::TurnStarted {
+            fight_id,
+            name: combatant.name.clone(),
+            entity_id: caster_entity_id,
+            side: combatant.side,
+            turn_number,
+        }]
     }
 
     fn handle_hp_change(
@@ -161,6 +193,11 @@ impl FightTracker {
         } else {
             ActionKind::Heal
         };
+        let turn_number = self
+            .turn_counts
+            .get(&current_cast.caster_entity_id)
+            .copied()
+            .unwrap_or_default();
 
         vec![FightEvent::ActionRecorded {
             fight_id,
@@ -171,6 +208,7 @@ impl FightTracker {
             element,
             spell_name: Some(current_cast.spell_name.clone()),
             is_critical: current_cast.is_critical,
+            turn_number,
         }]
     }
 
@@ -293,7 +331,16 @@ mod tests {
             spell_name: "Ruse".to_string(),
             is_critical: false,
         });
-        assert_eq!(spell_cast_events, Vec::new());
+        assert_eq!(
+            spell_cast_events,
+            vec![FightEvent::TurnStarted {
+                fight_id: 1568151141,
+                name: "Blampy".to_string(),
+                entity_id: 5547447,
+                side: Side::Player,
+                turn_number: 1,
+            }]
+        );
 
         let hp_change_events = tracker.process(LogEvent::HpChange {
             name: "Soeur Zerker".to_string(),
@@ -312,6 +359,7 @@ mod tests {
                 element: Some("Feu".to_string()),
                 spell_name: Some("Ruse".to_string()),
                 is_critical: false,
+                turn_number: 1,
             }]
         );
     }
@@ -368,6 +416,7 @@ mod tests {
                 element: None,
                 spell_name: Some("Explosion".to_string()),
                 is_critical: false,
+                turn_number: 1,
             }]
         );
     }
@@ -429,6 +478,7 @@ mod tests {
                 element: None,
                 spell_name: Some("Explosion".to_string()),
                 is_critical: false,
+                turn_number: 1,
             }
         );
 
@@ -467,6 +517,7 @@ mod tests {
                 element: None,
                 spell_name: Some("Explosion".to_string()),
                 is_critical: false,
+                turn_number: 1,
             }
         );
     }
@@ -504,6 +555,7 @@ mod tests {
                 element: None,
                 spell_name: Some("Mot de soin".to_string()),
                 is_critical: false,
+                turn_number: 1,
             }]
         );
     }
@@ -552,9 +604,11 @@ mod tests {
     }
 
     #[test]
+    // The long expected event vector is inherent to replaying a real log
+    // line-by-line; splitting it up would obscure the exact event order.
+    #[expect(clippy::too_many_lines)]
     fn replays_full_fight_log_and_produces_expected_event_sequence() {
         let log_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("..")
             .join("resources")
             .join("wakfu-one-fight.log");
         let content = std::fs::read_to_string(&log_path)
@@ -597,6 +651,13 @@ mod tests {
                     entity_id: 11370104,
                     side: Side::Player,
                 },
+                FightEvent::TurnStarted {
+                    fight_id: 1568151141,
+                    name: "Soeur Zerker".to_string(),
+                    entity_id: -1724034221200073,
+                    side: Side::Enemy,
+                    turn_number: 1,
+                },
                 FightEvent::ActionRecorded {
                     fight_id: 1568151141,
                     source: "Soeur Zerker".to_string(),
@@ -606,6 +667,7 @@ mod tests {
                     element: Some("Air".to_string()),
                     spell_name: Some("Transposition".to_string()),
                     is_critical: false,
+                    turn_number: 1,
                 },
                 FightEvent::ActionRecorded {
                     fight_id: 1568151141,
@@ -616,6 +678,14 @@ mod tests {
                     element: Some("Feu".to_string()),
                     spell_name: Some("Châtiment".to_string()),
                     is_critical: true,
+                    turn_number: 1,
+                },
+                FightEvent::TurnStarted {
+                    fight_id: 1568151141,
+                    name: "Distipy".to_string(),
+                    entity_id: 11370102,
+                    side: Side::Player,
+                    turn_number: 1,
                 },
                 FightEvent::ActionRecorded {
                     fight_id: 1568151141,
@@ -626,6 +696,7 @@ mod tests {
                     element: Some("Feu".to_string()),
                     spell_name: Some("Flèche explosive".to_string()),
                     is_critical: false,
+                    turn_number: 1,
                 },
                 FightEvent::ActionRecorded {
                     fight_id: 1568151141,
@@ -636,6 +707,14 @@ mod tests {
                     element: Some("Feu".to_string()),
                     spell_name: Some("Flèche explosive".to_string()),
                     is_critical: true,
+                    turn_number: 1,
+                },
+                FightEvent::TurnStarted {
+                    fight_id: 1568151141,
+                    name: "Blampy".to_string(),
+                    entity_id: 5547447,
+                    side: Side::Player,
+                    turn_number: 1,
                 },
                 FightEvent::ActionRecorded {
                     fight_id: 1568151141,
@@ -646,11 +725,74 @@ mod tests {
                     element: Some("Terre".to_string()),
                     spell_name: Some("Balle plombante".to_string()),
                     is_critical: true,
+                    turn_number: 1,
                 },
                 FightEvent::FightEnded {
                     fight_id: 1568151141
                 },
             ]
         );
+    }
+
+    #[test]
+    fn replays_full_fight_log_and_tracks_a_turn_number_per_combatant() {
+        let log_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("resources")
+            .join("wakfu-full-fight.log");
+        let content = std::fs::read_to_string(&log_path)
+            .expect("failed to read resources/wakfu-full-fight.log");
+
+        let mut tracker = FightTracker::new();
+        let mut events = Vec::new();
+        for line in content.lines() {
+            let log_event = crate::domain::parser::parse_line(line);
+            events.extend(tracker.process(log_event));
+        }
+
+        // Turn order in this log is Craqueboule Magmatique -> Distipy ->
+        // Craqueboule Magmatique -> Blampy -> Craqueboule Magmatique ->
+        // Distipy, before the enemy dies mid-turn and the fight ends. Each
+        // TurnStarted's turn_number is scoped to that combatant, so the
+        // enemy reaches turn 3 (it acts three times) while Distipy reaches
+        // turn 2 and Blampy only ever gets turn 1.
+        let turn_starts: Vec<(String, u32)> = events
+            .iter()
+            .filter_map(|event| match event {
+                FightEvent::TurnStarted {
+                    name, turn_number, ..
+                } => Some((name.clone(), *turn_number)),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(
+            turn_starts,
+            vec![
+                ("Craqueboule Magmatique".to_string(), 1),
+                ("Distipy".to_string(), 1),
+                ("Craqueboule Magmatique".to_string(), 2),
+                ("Blampy".to_string(), 1),
+                ("Craqueboule Magmatique".to_string(), 3),
+                ("Distipy".to_string(), 2),
+            ]
+        );
+
+        // Every ActionRecorded in between carries the turn_number of the
+        // turn it happened in, so damage dealt in Distipy's first turn is
+        // distinguishable from damage dealt in its second.
+        let distipy_action_turns: Vec<u32> = events
+            .iter()
+            .filter_map(|event| match event {
+                FightEvent::ActionRecorded {
+                    source,
+                    turn_number,
+                    ..
+                } if source == "Distipy" => Some(*turn_number),
+                _ => None,
+            })
+            .collect();
+        assert!(distipy_action_turns.iter().all(|&t| t == 1 || t == 2));
+        assert_eq!(distipy_action_turns.first().copied(), Some(1));
+        assert_eq!(distipy_action_turns.last().copied(), Some(2));
+        assert!(distipy_action_turns.contains(&2));
     }
 }
