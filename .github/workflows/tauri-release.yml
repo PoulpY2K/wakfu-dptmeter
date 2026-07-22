@@ -4,7 +4,7 @@ on:
   workflow_run:
     workflows: [ "Tauri build, upload and run analysis" ]
     types: [ completed ]
-    branches-ignore: [ 'main' ]
+    branches: [ 'main' ]
 
 env:
   REGISTRY: ghcr.io

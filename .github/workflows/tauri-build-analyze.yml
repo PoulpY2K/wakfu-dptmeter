@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: [ "**" ]
-    tags: [ "*.*.*" ]
   pull_request:
     types: [ opened, synchronize, reopened ]
 
