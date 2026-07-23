@@ -1,29 +1,18 @@
-use std::collections::HashMap;
-
-use super::model::{ActionKind, Combatant, CurrentCast, FightEvent, Side};
+use super::model::{ActionKind, CurrentCast, FightEvent, Side};
+use super::participants::ParticipantRegistry;
+use super::turns::TurnTracker;
 use crate::domain::parser::LogEvent;
 
+/// Consumes parsed [`LogEvent`]s from the Wakfu log and turns them into
+/// [`FightEvent`]s for the frontend, delegating character/summon
+/// attribution to [`ParticipantRegistry`] and turn-boundary detection to
+/// [`TurnTracker`].
 #[derive(Debug, Default)]
 pub struct FightTracker {
     fight_id: Option<u64>,
-    participants: HashMap<i64, Combatant>,
-    // Most recently joined/invoked entity for a given display name. The
-    // Wakfu log only ever refers to actors by name in spell-cast and PV
-    // lines (never by entity id), so when two owners have a same-named
-    // summon alive at once, the log itself gives no way to tell which
-    // instance a later line refers to. Resolving to the most recently
-    // invoked entity mirrors the one thing we do know for certain: at the
-    // moment of invocation, a summon belongs to whoever just invoked it.
-    entity_id_by_name: HashMap<String, i64>,
-    // Owner entity id staged by SummonInvoked, consumed by the FighterJoined
-    // that immediately follows it for the same summon name.
-    pending_summon_owners: HashMap<String, i64>,
+    participants: ParticipantRegistry,
     current_cast: Option<CurrentCast>,
-    // Resolved entity id of whoever currently holds the turn. A SpellCast
-    // resolving to a different owner than this is what marks a turn
-    // boundary, since the log never says whose turn it is directly.
-    current_turn_owner: Option<i64>,
-    turn_counts: HashMap<i64, u32>,
+    turns: TurnTracker,
 }
 
 impl FightTracker {
@@ -34,17 +23,8 @@ impl FightTracker {
     fn reset(&mut self) {
         self.fight_id = None;
         self.participants.clear();
-        self.entity_id_by_name.clear();
-        self.pending_summon_owners.clear();
         self.current_cast = None;
-        self.current_turn_owner = None;
-        self.turn_counts.clear();
-    }
-
-    fn resolve_owner_entity_id(&self, name: &str) -> Option<i64> {
-        let entity_id = *self.entity_id_by_name.get(name)?;
-        let combatant = self.participants.get(&entity_id)?;
-        Some(combatant.owner_entity_id.unwrap_or(combatant.entity_id))
+        self.turns.clear();
     }
 
     pub fn process(&mut self, event: LogEvent) -> Vec<FightEvent> {
@@ -63,7 +43,8 @@ impl FightTracker {
                 owner_name,
                 summon_name,
             } => {
-                self.handle_summon_invoked(&owner_name, summon_name);
+                self.participants
+                    .stage_summon_owner(&owner_name, summon_name);
                 Vec::new()
             }
             LogEvent::SpellCast {
@@ -95,28 +76,17 @@ impl FightTracker {
             events.push(FightEvent::FightStarted { fight_id });
         }
 
-        let owner_entity_id = self.pending_summon_owners.remove(&name);
         let side = if is_controlled_by_ai {
             Side::Enemy
         } else {
             Side::Player
         };
-        self.participants.insert(
-            entity_id,
-            Combatant {
-                name: name.clone(),
-                entity_id,
-                side,
-                owner_entity_id,
-            },
-        );
-        self.entity_id_by_name.insert(name.clone(), entity_id);
-
+        let owner_entity_id = self.participants.register(name.clone(), entity_id, side);
         if owner_entity_id.is_some() {
             return events;
         }
 
-        events.push(FightEvent::CombatantIdentified {
+        events.push(FightEvent::CharacterIdentified {
             fight_id,
             name,
             entity_id,
@@ -125,20 +95,13 @@ impl FightTracker {
         events
     }
 
-    fn handle_summon_invoked(&mut self, owner_name: &str, summon_name: String) {
-        if let Some(owner_entity_id) = self.resolve_owner_entity_id(owner_name) {
-            self.pending_summon_owners
-                .insert(summon_name, owner_entity_id);
-        }
-    }
-
     fn handle_spell_cast(
         &mut self,
         actor_name: &str,
         spell_name: String,
         is_critical: bool,
     ) -> Vec<FightEvent> {
-        let Some(caster_entity_id) = self.resolve_owner_entity_id(actor_name) else {
+        let Some(caster_entity_id) = self.participants.resolve_owner_entity_id(actor_name) else {
             self.current_cast = None;
             return Vec::new();
         };
@@ -148,24 +111,20 @@ impl FightTracker {
             is_critical,
         });
 
-        if self.current_turn_owner == Some(caster_entity_id) {
+        let Some(turn_number) = self.turns.advance(caster_entity_id) else {
             return Vec::new();
-        }
-        self.current_turn_owner = Some(caster_entity_id);
-        let turn_number = self.turn_counts.entry(caster_entity_id).or_insert(0);
-        *turn_number += 1;
-        let turn_number = *turn_number;
+        };
 
-        let (Some(fight_id), Some(combatant)) =
-            (self.fight_id, self.participants.get(&caster_entity_id))
+        let (Some(fight_id), Some(character)) =
+            (self.fight_id, self.participants.get(caster_entity_id))
         else {
             return Vec::new();
         };
         vec![FightEvent::TurnStarted {
             fight_id,
-            name: combatant.name.clone(),
+            name: character.name.clone(),
             entity_id: caster_entity_id,
-            side: combatant.side,
+            side: character.side,
             turn_number,
         }]
     }
@@ -182,8 +141,8 @@ impl FightTracker {
         };
         let Some(source) = self
             .participants
-            .get(&current_cast.caster_entity_id)
-            .map(|combatant| combatant.name.clone())
+            .get(current_cast.caster_entity_id)
+            .map(|character| character.name.clone())
         else {
             return Vec::new();
         };
@@ -193,11 +152,7 @@ impl FightTracker {
         } else {
             ActionKind::Heal
         };
-        let turn_number = self
-            .turn_counts
-            .get(&current_cast.caster_entity_id)
-            .copied()
-            .unwrap_or_default();
+        let turn_number = self.turns.turn_number(current_cast.caster_entity_id);
 
         vec![FightEvent::ActionRecorded {
             fight_id,
@@ -255,7 +210,7 @@ mod tests {
                 FightEvent::FightStarted {
                     fight_id: 1568151141
                 },
-                FightEvent::CombatantIdentified {
+                FightEvent::CharacterIdentified {
                     fight_id: 1568151141,
                     name: "Soeur Zerker".to_string(),
                     entity_id: -1724034221200073,
@@ -272,7 +227,7 @@ mod tests {
         });
         assert_eq!(
             player_events,
-            vec![FightEvent::CombatantIdentified {
+            vec![FightEvent::CharacterIdentified {
                 fight_id: 1568151141,
                 name: "Blampy".to_string(),
                 entity_id: 5547447,
@@ -282,7 +237,7 @@ mod tests {
     }
 
     #[test]
-    fn summon_invocation_excludes_it_from_combatant_identification() {
+    fn summon_invocation_excludes_it_from_character_identification() {
         let mut tracker = FightTracker::new();
         tracker.process(LogEvent::FightCreationDetected);
 
@@ -292,7 +247,7 @@ mod tests {
             entity_id: 5547447,
             is_controlled_by_ai: false,
         });
-        assert_eq!(blampy_events.len(), 2); // FightStarted + CombatantIdentified
+        assert_eq!(blampy_events.len(), 2); // FightStarted + CharacterIdentified
 
         let summon_invoked_events = tracker.process(LogEvent::SummonInvoked {
             owner_name: "Blampy".to_string(),
@@ -593,7 +548,7 @@ mod tests {
             next_fight_events,
             vec![
                 FightEvent::FightStarted { fight_id: 42 },
-                FightEvent::CombatantIdentified {
+                FightEvent::CharacterIdentified {
                     fight_id: 42,
                     name: "Distipy".to_string(),
                     entity_id: 11370102,
@@ -627,25 +582,25 @@ mod tests {
                 FightEvent::FightStarted {
                     fight_id: 1568151141
                 },
-                FightEvent::CombatantIdentified {
+                FightEvent::CharacterIdentified {
                     fight_id: 1568151141,
                     name: "Soeur Zerker".to_string(),
                     entity_id: -1724034221200073,
                     side: Side::Enemy,
                 },
-                FightEvent::CombatantIdentified {
+                FightEvent::CharacterIdentified {
                     fight_id: 1568151141,
                     name: "Blampy".to_string(),
                     entity_id: 5547447,
                     side: Side::Player,
                 },
-                FightEvent::CombatantIdentified {
+                FightEvent::CharacterIdentified {
                     fight_id: 1568151141,
                     name: "Distipy".to_string(),
                     entity_id: 11370102,
                     side: Side::Player,
                 },
-                FightEvent::CombatantIdentified {
+                FightEvent::CharacterIdentified {
                     fight_id: 1568151141,
                     name: "Marylpy".to_string(),
                     entity_id: 11370104,
@@ -735,7 +690,7 @@ mod tests {
     }
 
     #[test]
-    fn replays_full_fight_log_and_tracks_a_turn_number_per_combatant() {
+    fn replays_full_fight_log_and_tracks_a_turn_number_per_character() {
         let log_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("resources")
             .join("wakfu-full-fight.log");
@@ -752,7 +707,7 @@ mod tests {
         // Turn order in this log is Craqueboule Magmatique -> Distipy ->
         // Craqueboule Magmatique -> Blampy -> Craqueboule Magmatique ->
         // Distipy, before the enemy dies mid-turn and the fight ends. Each
-        // TurnStarted's turn_number is scoped to that combatant, so the
+        // TurnStarted's turn_number is scoped to that character, so the
         // enemy reaches turn 3 (it acts three times) while Distipy reaches
         // turn 2 and Blampy only ever gets turn 1.
         let turn_starts: Vec<(String, u32)> = events
