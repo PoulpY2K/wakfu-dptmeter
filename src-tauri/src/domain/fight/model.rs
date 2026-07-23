@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-/// Which team a combatant belongs to.
+/// Which team a character belongs to.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum Side {
     Player,
@@ -21,7 +21,7 @@ pub enum FightEvent {
     FightStarted {
         fight_id: u64,
     },
-    CombatantIdentified {
+    CharacterIdentified {
         fight_id: u64,
         name: String,
         entity_id: i64,
@@ -52,7 +52,7 @@ pub enum FightEvent {
 
 /// A fighter or summon currently tracked in the active fight.
 #[derive(Debug, Clone, PartialEq)]
-pub(super) struct Combatant {
+pub(super) struct Character {
     pub(super) name: String,
     pub(super) entity_id: i64,
     pub(super) side: Side,

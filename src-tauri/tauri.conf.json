@@ -11,18 +11,21 @@
   "app": {
     "windows": [
       {
-        "decorations": true,
+        "decorations": false,
+        "shadow": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
         "devtools": true,
         "contentProtected": false,
         "fullscreen": false,
-        "resizable": true,
+        "resizable": false,
         "maximized": false,
         "visible": true,
         "title": "Wakfu DPT Meter",
         "windowClassname": "Wakfu DPT Meter",
-        "width": 800,
+        "width": 320,
         "height": 400,
-        "alwaysOnTop": false,
         "zoomHotkeysEnabled": false
       }
     ],

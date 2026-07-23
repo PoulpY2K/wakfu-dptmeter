@@ -1,0 +1,11 @@
+<div class="row" [class.row--enemy]="stats().side === 'Enemy'">
+  <div class="row__bar-track">
+    <div class="row__bar-fill" [style.width.%]="barWidthPercent()"></div>
+  </div>
+  <span class="row__name">{{ stats().name }}</span>
+  <span class="row__stat">{{ format(stats().damageDealt) }} dmg</span>
+  @if (stats().healingDone > 0) {
+    <span class="row__stat row__stat--heal">{{ format(stats().healingDone) }} heal</span>
+  }
+  <span class="row__stat row__stat--dpt">DPT {{ format(dpt()) }}</span>
+</div>

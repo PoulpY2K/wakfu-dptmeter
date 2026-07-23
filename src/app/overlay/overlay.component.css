@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+.overlay {
+  min-width: 260px;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(15, 15, 20, 0.75);
+  color: #f0f0f0;
+  font-size: 13px;
+  /* Whole panel is a data-tauri-drag-region (see overlay.component.html) —
+     nothing in it is clickable yet, so it's the most discoverable way to
+     move a title-bar-less overlay window. */
+  cursor: move;
+}
+
+.overlay--ended {
+  opacity: 0.6;
+}
+
+.overlay--locked {
+  cursor: default;
+}
+
+.overlay__header {
+  font-weight: 600;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 6px;
+}
+
+.overlay__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.overlay__empty {
+  opacity: 0.6;
+  font-style: italic;
+}
