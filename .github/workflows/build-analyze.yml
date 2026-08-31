@@ -1,4 +1,4 @@
-name: "Tauri build, upload and run analysis"
+name: "Build, compile, upload and run analysis"
 
 on:
   workflow_dispatch:
@@ -47,6 +47,13 @@ jobs:
 
       - name: install frontend dependencies
         run: bun install --ignore-scripts --frozen-lockfile # change this to npm, pnpm or bun depending on which one you use.
+
+      - name: Run Angular Doctor
+        uses: antonygiomarxdev/angular-doctor@31560a0175ea8099ea2d83e4a150ea6718561bcc
+        with:
+          directory: .
+          verbose: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: install cargo llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov

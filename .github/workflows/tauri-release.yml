@@ -2,7 +2,7 @@ name: "Build and release"
 
 on:
   workflow_run:
-    workflows: [ "Tauri build, upload and run analysis" ]
+    workflows: [ "Build, compile, upload and run analysis" ]
     types: [ completed ]
     branches: [ 'main' ]
 
