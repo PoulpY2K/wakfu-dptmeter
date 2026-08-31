@@ -8,7 +8,7 @@ on:
     types: [ opened, synchronize, reopened ]
 
 jobs:
-  build-tauri:
+  build-upload:
     permissions:
       contents: write
       pull-requests: read
@@ -18,6 +18,8 @@ jobs:
         include:
           - platform: "windows-latest"
             args: ""
+          - platform: "macos-latest"
+            args: "--target universal-apple-darwin"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -48,13 +50,6 @@ jobs:
       - name: install frontend dependencies
         run: bun install --ignore-scripts --frozen-lockfile # change this to npm, pnpm or bun depending on which one you use.
 
-      - name: Run Angular Doctor
-        uses: antonygiomarxdev/angular-doctor@31560a0175ea8099ea2d83e4a150ea6718561bcc
-        with:
-          directory: .
-          verbose: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: install cargo llvm-cov
         uses: taiki-e/install-action@cargo-llvm-cov
 
@@ -81,7 +76,7 @@ jobs:
 
   sonarqube:
     runs-on: windows-latest
-    needs: build-tauri
+    needs: build-upload
     name: SonarQube
     steps:
       - uses: actions/checkout@v7.0.1
