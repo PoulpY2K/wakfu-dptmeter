@@ -1,4 +1,4 @@
-name: "Tauri build, upload and run analysis"
+name: "Build, compile, upload and run analysis"
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
     types: [ opened, synchronize, reopened ]
 
 jobs:
-  build-tauri:
+  build-upload:
     permissions:
       contents: write
       pull-requests: read
@@ -18,6 +18,8 @@ jobs:
         include:
           - platform: "windows-latest"
             args: ""
+          - platform: "macos-latest"
+            args: "--target universal-apple-darwin"
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -74,7 +76,7 @@ jobs:
 
   sonarqube:
     runs-on: windows-latest
-    needs: build-tauri
+    needs: build-upload
     name: SonarQube
     steps:
       - uses: actions/checkout@v7.0.1
