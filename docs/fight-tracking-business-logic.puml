@@ -1,0 +1,33 @@
+@startuml fight-tracking-business-logic
+title How the DPT Meter reads a fight
+
+actor "Wakfu Game" as Game
+participant "DPT Meter" as Meter
+participant "Your Screen" as Screen
+
+Game -> Meter: fight starts
+Meter -> Screen: show "Fight Started"
+
+loop each fighter joining
+  Game -> Meter: fighter joins\n(player, enemy, or summon)
+  alt is a summoned creature
+    Meter -> Meter: remember who owns it
+  else is a real fighter
+    Meter -> Screen: show fighter\n(Player or Enemy)
+  end
+end
+
+loop each turn, until the fight ends
+  Game -> Meter: someone casts a spell
+  alt it's a different person's turn now
+    Meter -> Screen: show "Turn Started"
+  end
+  Game -> Meter: target's health changes
+  Meter -> Screen: show damage or healing,\ncredited to the caster\n(or the caster's owner, if it was a summon)
+end
+
+Game -> Meter: fight ends
+Meter -> Screen: show "Fight Ended"
+Meter -> Meter: clear data,\nready for the next fight
+
+@enduml

@@ -1,0 +1,209 @@
+ WARN 23:49:54,283 [AWT-EventQueue-0] (cky:29) - The fight with the id 1568189063 has not been found
+ INFO 23:49:54,313 [AWT-EventQueue-0] (ciD:117) - NetInFight Added
+ INFO 23:49:54,313 [AWT-EventQueue-0] (ciD:117) - NetInFight Added
+ INFO 23:49:54,386 [AWT-EventQueue-0] (aXI:47) - CREATION DU COMBAT
+ INFO 23:49:54,417 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Craqueboule Magmatique breed : 4266 [-1724034217593928] isControlledByAI=true obstacleId : -1 join the fight at {Point3 : (-31, -24, 0)}
+ INFO 23:49:54,419 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Craqueboule Magmatique breed : 4266 [-1724034217593929] isControlledByAI=true obstacleId : -1 join the fight at {Point3 : (-30, -20, 0)}
+ INFO 23:49:54,420 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Craqueboule Magmatique breed : 4266 [-1724034217593927] isControlledByAI=true obstacleId : -1 join the fight at {Point3 : (-31, -22, 0)}
+ INFO 23:49:54,430 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Distipy breed : 9 [11370102] isControlledByAI=false obstacleId : -1 join the fight at {Point3 : (-27, -23, 0)}
+ INFO 23:49:54,500 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Votre combat est verrouillé, ce qui empêche d'autres joueurs de vous rejoindre.
+ WARN 23:49:55,096 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id -5
+ WARN 23:49:55,096 [AWT-EventQueue-0] (bvm:58) - Pas de cible sur laquelle appliquer les HMI pour l'effet 310
+ WARN 23:49:55,096 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id 252845
+ WARN 23:49:55,096 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id 253027
+ WARN 23:49:55,096 [AWT-EventQueue-0] (aXm:191) - Unable to find a valid RunningEffectManager to apply effect d'id 253028
+ INFO 23:49:55,097 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Blampy breed : 13 [5547447] isControlledByAI=false obstacleId : -1 join the fight at {Point3 : (0, 0, 0)}
+ INFO 23:49:58,212 [AWT-EventQueue-0] (cjr:53) - Unserializing effects for fighter 5547447, byte size : 15776
+ INFO 23:49:58,274 [AWT-EventQueue-0] (cjr:53) - Unserializing effects for fighter 11370102, byte size : 17510
+ INFO 23:49:58,433 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 30 % Dommages infligés (Insaisissable)
+ INFO 23:49:58,439 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Fuyard (+1 Niv.)
+ INFO 23:50:00,316 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique lance le sort Coup de Boule
+ INFO 23:50:00,925 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: -0 PV (Eau)
+ INFO 23:50:00,927 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: 1 PM
+ INFO 23:50:04,245 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Balise d'alignement
+ INFO 23:50:04,942 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Invoque un(e) Balise d'Alignement
+ INFO 23:50:04,942 [AWT-EventQueue-0] (eXG:105) - Instanciation d'une nouvelle invocation avec un id de -1724034217589558
+ INFO 23:50:04,943 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Balise d'Alignement breed : 3798 [-1724034217589558] isControlledByAI=true obstacleId : 5 join the fight at {Point3 : (-30, -22, 0)}
+ INFO 23:50:07,455 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Balise de contact
+ INFO 23:50:08,057 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Invoque un(e) Balise de Contact
+ INFO 23:50:08,057 [AWT-EventQueue-0] (eXG:105) - Instanciation d'une nouvelle invocation avec un id de -1724034217589467
+ INFO 23:50:08,058 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Balise de Contact breed : 3799 [-1724034217589467] isControlledByAI=true obstacleId : 6 join the fight at {Point3 : (-29, -20, 0)}
+ INFO 23:50:09,269 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Flèche explosive (Critiques)
+ WARN 23:50:09,279 [AWT-EventQueue-0] (arx:744) - Impossible de récupérer la duree de l'animation 5_AnimTarget-FlecheExplosive dans jar:file:./contents/animations/players/players.jar!/90 : la definition n'est pas chargee
+ INFO 23:50:10,472 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -2 114 PV (Feu)
+ INFO 23:50:10,772 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -988 PV (Feu) (Balise d'alignement)
+ INFO 23:50:10,776 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -791 PV (Feu) (Parade !) (Balise d'alignement)
+ INFO 23:50:11,074 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -988 PV (Feu) (Balise de contact)
+ INFO 23:50:11,076 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -2 114 PV (Feu)
+ INFO 23:50:11,079 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+60 Niv.)
+ INFO 23:50:11,080 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Précision (+60 Niv.)
+ INFO 23:50:11,081 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Tir précis
+ INFO 23:50:12,184 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Tir précis (Niv. 1)
+ INFO 23:50:12,187 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+110 Niv.) (Esprit Affûté)
+ INFO 23:50:12,187 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 1 PW
+ INFO 23:50:12,189 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: La Pointe affûtée est prête !
+ INFO 23:50:12,190 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Balise affûtée (+1 Niv.)
+ INFO 23:50:12,384 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 2 PA (Parti pris)
+ INFO 23:50:12,385 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: -2 PM max (Parti pris)
+ INFO 23:50:13,192 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Flèche explosive
+ WARN 23:50:13,195 [AWT-EventQueue-0] (arx:744) - Impossible de récupérer la duree de l'animation 5_AnimTarget-FlecheExplosive dans jar:file:./contents/animations/players/players.jar!/90 : la definition n'est pas chargee
+ INFO 23:50:14,323 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -1 461 PV (Feu)
+ INFO 23:50:14,600 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -542 PV (Feu) (Parade !) (Balise d'alignement)
+ INFO 23:50:14,602 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -677 PV (Feu) (Balise d'alignement)
+ INFO 23:50:14,803 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -542 PV (Feu) (Parade !) (Balise de contact)
+ INFO 23:50:14,804 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -1 462 PV (Feu)
+ INFO 23:50:14,805 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+70 Niv.)
+ INFO 23:50:14,806 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Consomme Pointe affûtée
+ INFO 23:50:15,004 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Tir précis
+ INFO 23:50:16,210 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: n'est plus sous l'emprise de 'Tir précis'
+ INFO 23:50:16,210 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Débalisage
+ INFO 23:50:16,913 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Balise de Contact: Retire la Balise
+ INFO 23:50:17,213 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+110 Niv.) (Débalisage)
+ INFO 23:50:17,214 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 1 PW
+ INFO 23:50:17,216 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: La Pointe affûtée est prête !
+ INFO 23:50:17,217 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Balise affûtée (+2 Niv.)
+ INFO 23:50:17,218 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Précision (+100 Niv.) (Débalisage)
+ INFO 23:50:17,219 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Débalisage
+ INFO 23:50:18,027 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Balise d'Alignement: Retire la Balise
+ INFO 23:50:18,028 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Balise de Contact est hors-combat !
+ INFO 23:50:18,326 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+50 Niv.) (Débalisage)
+ INFO 23:50:18,326 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Précision (+140 Niv.) (Débalisage)
+ INFO 23:50:19,025 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Balise d'Alignement est hors-combat !
+ INFO 23:50:19,126 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Roulade
+ WARN 23:50:19,130 [AsyncLoader-60] (Gi:59) - Unable to read file:./contents/animations/players/players.jar!/0.anm : JAR entry 0.anm not found in .\contents\animations\players\players.jar
+ INFO 23:50:19,828 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: se téléporte
+ INFO 23:50:20,730 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 1 PM
+ INFO 23:50:20,733 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 40 % Dommages infligés (Insaisissable)
+ INFO 23:50:20,734 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+90 Niv.) (Insaisissable)
+ INFO 23:50:20,735 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Précision (+180 Niv.) (Insaisissable)
+ INFO 23:50:20,737 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: +0 PV (Neutre) (Éclaireur spécialisé)
+ INFO 23:50:20,740 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] 50 secondes reportées pour le tour suivant.
+ INFO 23:50:23,250 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique lance le sort Coup de Boule
+ INFO 23:50:23,848 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: -0 PV (Eau)
+ INFO 23:50:23,849 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: 1 PM
+ INFO 23:50:24,262 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Poudre (+5 Niv.)
+ INFO 23:50:25,759 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Ruse
+ INFO 23:50:27,167 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: n'est plus sous l'emprise de 'Fuyard'
+ INFO 23:50:27,169 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Fourbe (+1 Niv.)
+ INFO 23:50:27,170 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Convertit sa maîtrise distance en maîtrise mêlée
+ INFO 23:50:32,103 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Coup rapide
+ INFO 23:50:33,109 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Invoque un(e) Bombe Aveuglante
+ INFO 23:50:33,109 [AWT-EventQueue-0] (eXG:105) - Instanciation d'une nouvelle invocation avec un id de -1724034217589173
+ INFO 23:50:33,109 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Bombe Aveuglante breed : 3795 [-1724034217589173] isControlledByAI=true obstacleId : 5 join the fight at {Point3 : (-28, -27, 0)}
+ INFO 23:50:33,116 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Aveuglante: Bombe aveuglante (Niv. 2)
+ INFO 23:50:33,712 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PM
+ INFO 23:50:33,714 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Aveuglante: Bombe aveuglante (Niv. 4)
+ INFO 23:50:33,714 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PM (Trainée de poudre)
+ INFO 23:50:37,645 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Barbrûlé
+ INFO 23:50:38,735 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Invoque un(e) Bombe Immolante
+ INFO 23:50:38,736 [AWT-EventQueue-0] (eXG:105) - Instanciation d'une nouvelle invocation avec un id de -1724034217589108
+ INFO 23:50:38,736 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Bombe Immolante breed : 3796 [-1724034217589108] isControlledByAI=true obstacleId : 6 join the fight at {Point3 : (-27, -26, 0)}
+ INFO 23:50:38,742 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Immolante: Bombe immolante (Niv. 2)
+ INFO 23:50:39,539 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Poudre (+4 Niv.)
+ INFO 23:50:39,541 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Poudre (+5 Niv.)
+ INFO 23:50:39,542 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Poudre (+6 Niv.)
+ INFO 23:50:39,544 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -168 PV (Feu)
+ INFO 23:50:39,544 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -153 PV (Feu)
+ INFO 23:50:39,546 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Immolante: Bombe immolante (Niv. 1)
+ INFO 23:50:39,547 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Immolante: Bombe immolante (Niv. 3)
+ INFO 23:50:39,548 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PM (Trainée de poudre)
+ INFO 23:50:39,549 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Bombe collante (Critiques)
+ INFO 23:50:40,042 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Immolante: Bombe collante (Niv. 89)
+ INFO 23:50:41,858 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Balle plombante (Critiques)
+ INFO 23:50:42,959 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Invoque un(e) Bombe Paralysante
+ INFO 23:50:42,960 [AWT-EventQueue-0] (eXG:105) - Instanciation d'une nouvelle invocation avec un id de -1724034217589035
+ INFO 23:50:42,961 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Bombe Paralysante breed : 3797 [-1724034217589035] isControlledByAI=true obstacleId : 7 join the fight at {Point3 : (-28, -25, 0)}
+ INFO 23:50:42,967 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Paralysante: Bombe paralysante (Niv. 4)
+ INFO 23:50:44,269 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -901 PV (Terre)
+ INFO 23:50:44,270 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Paralysante: Retour de dague (+1 Niv.)
+ INFO 23:50:44,271 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: Retour de dague (+1 Niv.)
+ INFO 23:50:44,272 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Paralysante: Bombe paralysante (Niv. 6)
+ INFO 23:50:44,273 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PM (Trainée de poudre)
+ INFO 23:50:45,975 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Pulsar
+ INFO 23:50:47,184 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Pulsar (+1 Niv.)
+ INFO 23:50:47,185 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Ruse
+ INFO 23:50:48,187 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: n'est plus sous l'emprise de 'Fourbe'
+ INFO 23:50:48,189 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Fuyard (+1 Niv.)
+ INFO 23:50:48,191 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: Tir surprise (Niv. 58)
+ INFO 23:50:49,897 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Dague boomerang
+ INFO 23:50:51,404 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -502 PV (Terre)
+ INFO 23:50:51,406 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -502 PV (Lumière) (Terre) (Tir surprise)
+ INFO 23:50:51,409 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -459 PV (Terre) (Retour de dague)
+ INFO 23:50:51,409 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Paralysante: n'est plus sous l'emprise de 'Retour de dague'
+ INFO 23:50:51,411 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -459 PV (Terre) (Retour de dague)
+ INFO 23:50:51,411 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: n'est plus sous l'emprise de 'Retour de dague'
+ INFO 23:50:51,412 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Détonation
+ INFO 23:50:52,111 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -706 PV (Feu) (Bombe collante)
+ INFO 23:50:52,112 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -705 PV (Feu) (Bombe collante)
+ INFO 23:50:52,115 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -232 PV (Feu) (Bombe immolante)
+ INFO 23:50:52,116 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -232 PV (Feu) (Bombe immolante)
+ INFO 23:50:52,415 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PW
+ INFO 23:50:52,416 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PA (Bomber Fan)
+ INFO 23:50:52,418 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -405 PV (Air) (Bombe aveuglante)
+ INFO 23:50:52,419 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Le challenge "Séisme" a échoué.
+ INFO 23:50:52,714 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PW
+ INFO 23:50:52,715 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PA (Bomber Fan)
+ INFO 23:50:52,716 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: -646 PV (Terre) (Bombe paralysante)
+ INFO 23:50:52,717 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -898 PV (Terre) (Bombe paralysante)
+ INFO 23:50:52,816 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Immolante est hors-combat !
+ INFO 23:50:53,017 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PA (Bomber Fan)
+ INFO 23:50:53,117 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Aveuglante est hors-combat !
+ INFO 23:50:53,420 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Bombe Paralysante est hors-combat !
+ INFO 23:50:57,042 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy lance le sort Pulsar
+ INFO 23:50:59,557 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -1 004 PV (Terre) (Pulsar II)
+ INFO 23:50:59,557 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: n'est plus sous l'emprise de 'Pulsar'
+ INFO 23:51:02,487 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] 30 secondes reportées pour le tour suivant.
+ INFO 23:51:02,575 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: 1 PW
+ INFO 23:51:04,084 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique lance le sort Coup de Boule (Critiques)
+ INFO 23:51:04,692 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: -46 PV (Eau)
+ INFO 23:51:04,693 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: 1 PM
+ INFO 23:51:07,000 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique lance le sort Coup de Boule (Critiques)
+ INFO 23:51:07,609 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy: -0 PV (Eau)
+ INFO 23:51:07,610 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: 1 PM
+ INFO 23:51:12,637 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Balise d'alignement
+ INFO 23:51:13,242 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Invoque un(e) Balise d'Alignement
+ INFO 23:51:13,242 [AWT-EventQueue-0] (eXG:105) - Instanciation d'une nouvelle invocation avec un id de -1724034217588043
+ INFO 23:51:13,243 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Balise d'Alignement breed : 3798 [-1724034217588043] isControlledByAI=true obstacleId : 5 join the fight at {Point3 : (-26, -24, 0)}
+ INFO 23:51:13,253 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: n'est plus sous l'emprise de 'Balise affûtée'
+ INFO 23:51:24,210 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Roulade
+ INFO 23:51:24,911 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: se téléporte
+ INFO 23:51:25,818 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 1 PM
+ INFO 23:51:28,434 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Tir précis
+ INFO 23:51:29,642 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Tir précis (Niv. 1)
+ INFO 23:51:29,644 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+140 Niv.) (Esprit Affûté)
+ INFO 23:51:29,644 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 1 PW
+ INFO 23:51:29,646 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: La Pointe affûtée est prête !
+ INFO 23:51:29,647 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Balise affûtée (+2 Niv.)
+ INFO 23:51:29,648 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 2 PA (Parti pris)
+ INFO 23:51:29,650 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: -2 PM max (Parti pris)
+ INFO 23:51:30,249 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Balise de destruction
+ INFO 23:51:30,853 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Invoque un(e) Balise de Destruction
+ INFO 23:51:30,853 [AWT-EventQueue-0] (eXG:105) - Instanciation d'une nouvelle invocation avec un id de -1724034217587926
+ INFO 23:51:30,854 [AWT-EventQueue-0] (faw:1405) - [_FL_] fightId=1568189063 Balise de Destruction breed : 3800 [-1724034217587926] isControlledByAI=true obstacleId : 6 join the fight at {Point3 : (-27, -26, 0)}
+ INFO 23:51:30,863 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: n'est plus sous l'emprise de 'Balise affûtée'
+ INFO 23:51:36,284 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Flèche explosive
+ INFO 23:51:37,695 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -937 PV (Feu) (Balise de destruction)
+ INFO 23:51:37,696 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -1 064 PV  (Feu) (Balise de destruction)
+ INFO 23:51:37,697 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -2 571 PV  (Feu) (Parade !) (Tir précis)
+ INFO 23:51:38,199 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -936 PV (Feu) (Balise d'alignement)
+ INFO 23:51:38,199 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -2 827 PV (Feu) (Tir précis)
+ INFO 23:51:38,201 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+100 Niv.)
+ INFO 23:51:38,201 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: 1 PW
+ INFO 23:51:38,203 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: La Pointe affûtée est prête !
+ INFO 23:51:38,203 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Balise affûtée (+2 Niv.)
+ INFO 23:51:38,205 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Consomme Pointe affûtée
+ INFO 23:51:38,397 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique est hors-combat !
+ INFO 23:51:40,409 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy lance le sort Flèche explosive (Critiques)
+ INFO 23:51:41,817 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -1 615 PV (Feu) (Balise de destruction)
+ INFO 23:51:41,819 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -4 846 PV (Feu) (Tir précis)
+ INFO 23:51:42,319 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique: -1 615 PV (Feu) (Balise d'alignement)
+ INFO 23:51:42,520 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Craqueboule Magmatique est hors-combat !
+ INFO 23:51:42,722 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Affûtage (+60 Niv.)
+ INFO 23:51:42,723 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy: Consomme Pointe affûtée
+ INFO 23:51:42,724 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Vous avez gagné 237 kamas.
+ INFO 23:51:42,724 [AWT-EventQueue-0] (aPV:174) - [Information (jeu)] Vous avez gagné 256 kamas.
+ INFO 23:51:42,724 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Blampy : +63 675 324 points d'XP.  Prochain niveau dans : 186 559 006.
+ INFO 23:51:42,725 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Distipy : +9 582 905 points d'XP.  Prochain niveau dans : 1 463 414 217.
+ INFO 23:51:42,732 [AWT-EventQueue-0] (aPV:174) - [Information (combat)] Combat terminé, cliquez ici pour rouvrir l'écran de fin de combat.
+ INFO 23:51:42,743 [AWT-EventQueue-0] (aWF:91) - [FIGHT] End fight with id 1568189063
+ INFO 23:51:42,745 [AWT-EventQueue-0] (ciD:122) - NetInFight Removed

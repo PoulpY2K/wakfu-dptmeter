@@ -1,0 +1,24 @@
+<div class="backdrop" (mousedown)="closed.emit()"></div>
+<div
+  class="menu"
+  [style.left.px]="left()"
+  [style.top.px]="top()"
+  [style.visibility]="positioned() ? 'visible' : 'hidden'"
+>
+  <button type="button" class="menu__item" (click)="resetFight()">Reset current fight</button>
+  <div class="menu__separator"></div>
+  <button type="button" class="menu__item menu__item--toggle" (click)="toggleLock()">
+    <span>Lock position</span>
+    <span class="switch" [class.switch--on]="overlayUiState.locked()">
+      <span class="switch__thumb"></span>
+    </span>
+  </button>
+  <button type="button" class="menu__item menu__item--toggle" (click)="toggleAlwaysOnTop()">
+    <span>Always on top</span>
+    <span class="switch" [class.switch--on]="overlayUiState.alwaysOnTop()">
+      <span class="switch__thumb"></span>
+    </span>
+  </button>
+  <div class="menu__separator"></div>
+  <button type="button" class="menu__item" (click)="quit()">Quit</button>
+</div>

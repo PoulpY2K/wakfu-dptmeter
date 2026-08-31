@@ -56,6 +56,12 @@
           },
           "defaultConfiguration": "production"
         },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "wakfu-dptmeter:build"
+          }
+        },
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {

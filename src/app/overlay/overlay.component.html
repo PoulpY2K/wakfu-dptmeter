@@ -1,0 +1,34 @@
+<main
+  class="overlay"
+  [attr.data-tauri-drag-region]="overlayUiState.locked() ? null : 'deep'"
+  [class.overlay--ended]="fightStore.status() === 'ended'"
+  [class.overlay--locked]="overlayUiState.locked()"
+>
+  <header class="overlay__header">
+    @switch (fightStore.status()) {
+      @case ("idle") {
+        <span>Waiting for fight…</span>
+      }
+      @case ("active") {
+        <span>Fight #{{ fightStore.fightId() }}</span>
+      }
+      @case ("ended") {
+        <span>Fight ended</span>
+      }
+    }
+  </header>
+
+  <ul class="overlay__list">
+    @for (participant of fightStore.participants(); track participant.name) {
+      <li>
+        <app-participant-row [stats]="participant" [topDamage]="topDamage()" />
+      </li>
+    } @empty {
+      <li class="overlay__empty">No participants yet</li>
+    }
+  </ul>
+</main>
+
+@if (contextMenuPosition(); as position) {
+  <app-context-menu [x]="position.x" [y]="position.y" (closed)="closeContextMenu()" />
+}

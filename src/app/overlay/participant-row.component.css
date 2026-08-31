@@ -1,0 +1,51 @@
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.row__bar-track {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.row__bar-fill {
+  height: 100%;
+  background: rgba(80, 160, 255, 0.35);
+  transition: width 0.2s ease-out;
+}
+
+.row--enemy .row__bar-fill {
+  background: rgba(255, 90, 90, 0.35);
+}
+
+.row__name {
+  position: relative;
+  z-index: 1;
+  font-weight: 500;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.row__stat {
+  position: relative;
+  z-index: 1;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+.row__stat--heal {
+  color: #7cfc9a;
+}
+
+.row__stat--dpt {
+  opacity: 0.7;
+}

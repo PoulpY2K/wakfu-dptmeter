@@ -20,6 +20,21 @@ fn open_devtools_if_debug(app: &tauri::App) {
     }
 }
 
+fn setup_menu(app: &tauri::App) {
+    let menu = match adapter::menu::build(app.handle()) {
+        Ok(menu) => menu,
+        Err(err) => {
+            log::error!("failed to build app menu: {err}");
+            return;
+        }
+    };
+
+    adapter::menu::setup_tray(app, &menu);
+    app.on_menu_event(adapter::menu::handle_event);
+    app.manage(menu);
+    app.manage(adapter::menu::LockState::default());
+}
+
 fn start_log_watcher(app: &tauri::App) {
     let app_handle = app.handle().clone();
     let log_path = match adapter::wakfu::log::get_path() {
@@ -53,9 +68,16 @@ pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
             open_devtools_if_debug(app);
+            setup_menu(app);
             start_log_watcher(app);
             Ok(())
         })
+        .invoke_handler(tauri::generate_handler![
+            adapter::menu::toggle_lock,
+            adapter::menu::toggle_always_on_top,
+            adapter::menu::quit_app,
+            adapter::menu::get_overlay_state,
+        ])
         .plugin(tauri_plugin_opener::init())
         .plugin(
             tauri_plugin_log::Builder::new()
